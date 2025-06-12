@@ -1,90 +1,204 @@
-# Salat Planner - 5 Daily Prayers App
+# 🕌 PrayerSync 
 
-A web-based prayer time calculator and planner that helps busy Muslim professionals manage their 5 daily prayers with calendar integration.
+**Never miss a prayer as a busy professional.** Automatic calendar sync and smart conflict detection for Muslim professionals.
 
-## Features
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgfarooqi%2Fprayersync)
 
-- **Accurate Prayer Times**: Calculates prayer times based on your location using various calculation methods
-- **Prayer Tracking**: Mark prayers as completed and track daily progress
-- **Calendar Integration**: 
-  - Export prayer times to any calendar app (Google Calendar, Outlook, Apple Calendar)
-  - Download .ics files for today, this week, or this month
-  - Calendar subscription URL for automatic updates
-- **Notifications**: Browser notifications to remind you before each prayer
-- **Offline Support**: Works offline once loaded (Progressive Web App)
-- **Mobile Friendly**: Responsive design that works on all devices
+## 🎯 Overview
 
-## How to Use
+PrayerSync is a Progressive Web App designed specifically for Muslim professionals who need to balance their faith with demanding work schedules. It automatically integrates prayer times into your business calendar and provides smart conflict detection.
 
-1. **Open the App**: Simply open `index.html` in your web browser
-2. **Allow Location**: Grant location access for accurate prayer times in your area
-3. **Enable Notifications**: Click "Enable Notifications" to get prayer reminders
-4. **Calendar Integration**:
-   - Click "Calendar Integration" button
-   - Choose to export today's, this week's, or this month's prayer times
-   - The .ics file will download and can be imported into any calendar app
-   - For automatic updates, copy the subscription URL and add it to your calendar
+### ✨ Key Features
 
-## Calendar Setup Instructions
+- **📅 Calendar Integration**: Export prayer times to Google Calendar, Outlook, Apple Calendar
+- **⚠️ Meeting Conflict Alerts**: Smart detection when meetings overlap with prayer times
+- **🌍 Global Prayer Times**: Accurate calculations for 500+ cities worldwide
+- **✈️ Travel Mode**: Automatic updates for business travelers
+- **📱 PWA**: Install as app, works offline
+- **🔄 Real-time Updates**: Live prayer time calculations
+- **🧭 Qibla Compass**: Direction to Mecca from anywhere
 
-### Google Calendar
-1. Export prayer times using the "Export This Month" button
-2. Go to Google Calendar
-3. Click the gear icon → Settings
-4. Select "Import & Export" from the left menu
-5. Click "Select file from your computer" and choose the downloaded .ics file
-6. Select which calendar to add the events to
-7. Click "Import"
+## 🚀 Live Demo
 
-### Apple Calendar
-1. Export prayer times or copy the subscription URL
-2. Open Calendar app
-3. File → Import (for .ics file) or File → New Calendar Subscription (for URL)
-4. Follow the prompts to add prayer times
+**Production Site**: [https://prayersync.vercel.app](https://prayersync.vercel.app)
 
-### Microsoft Outlook
-1. Export prayer times using any export button
-2. Open Outlook
-3. File → Open & Export → Import/Export
-4. Choose "Import an iCalendar (.ics) file"
-5. Select the downloaded file
+### 📊 SEO Landing Pages (64 pages)
+- **City Pages**: Prayer times for major cities ([New York](https://prayersync.vercel.app/prayer-times-new-york), [London](https://prayersync.vercel.app/prayer-times-london), [Dubai](https://prayersync.vercel.app/prayer-times-dubai))
+- **Airport Guides**: Prayer facilities for travelers ([JFK Airport](https://prayersync.vercel.app/prayer-room-new-york-airport))
+- **Professional Guides**: Workplace prayer solutions ([Meeting Conflicts](https://prayersync.vercel.app/meeting-prayer-conflict))
 
-## Calculation Methods
+## 🛠️ Technology Stack
 
-The app supports multiple prayer calculation methods:
-- Muslim World League
-- Islamic Society of North America (ISNA)
-- Egyptian General Authority
-- Umm al-Qura, Makkah
-- University of Islamic Sciences, Karachi
+- **Frontend**: Vanilla JavaScript, CSS3, HTML5
+- **Styling**: Custom CSS with CSS Variables
+- **PWA**: Service Worker, Web App Manifest
+- **Deployment**: Vercel with automatic GitHub integration
+- **SEO**: Programmatic page generation, Schema markup
+- **APIs**: DataForSEO for keyword research, Prayer times APIs
 
-## Technical Details
+## 📁 Project Structure
 
-- Pure JavaScript (no framework dependencies)
-- Uses browser's Geolocation API
-- Local storage for settings and prayer tracking
-- Service Worker for offline functionality
-- iCal format for universal calendar compatibility
+```
+prayersync/
+├── index.html              # Main application
+├── app.js                  # Core JavaScript logic
+├── styles.css              # Production styles
+├── manifest.json           # PWA manifest
+├── service-worker.js       # Offline functionality
+├── vercel.json             # Vercel deployment config
+├── pages/                  # SEO landing pages (64 pages)
+│   ├── prayer-times-*.html # City-specific pages
+│   ├── prayer-room-*.html  # Airport guides
+│   └── *.html              # Professional guides
+├── scripts/                # Automation scripts
+│   ├── seo-automation.js   # DataForSEO integration
+│   ├── generate-seo-pages.js # Page generation
+│   └── local-seo-research.js # Keyword research
+├── data/                   # Generated data
+│   ├── keywords/           # Keyword analysis
+│   └── reports/            # SEO reports
+└── docs/                   # Documentation
+    └── gtm/                # Go-to-market plans
+```
 
-## Privacy
+## 🔧 Development
 
-- All calculations are done locally in your browser
-- Location data is only used for prayer calculations
-- No data is sent to any server
-- Settings and prayer tracking data stored locally
+### Prerequisites
+- Node.js 16+
+- Git
 
-## Future Enhancements
+### Local Development
+```bash
+# Clone repository
+git clone https://github.com/gfarooqi/prayersync.git
+cd prayersync
 
-To fully integrate with Google Calendar automatically:
-1. Set up a Google Cloud Project
-2. Enable Google Calendar API
-3. Create OAuth 2.0 credentials
-4. Replace `YOUR_GOOGLE_CLIENT_ID` in script.js with your actual client ID
-5. Add authorized JavaScript origins and redirect URIs
+# Install dependencies
+npm install
 
-## Browser Support
+# Start development server
+npm run dev
+# App available at http://localhost:8080
 
-- Chrome/Edge: Full support
-- Firefox: Full support
-- Safari: Full support (notifications may require additional permissions)
-- Mobile browsers: Full support with PWA installation option
+# Generate SEO pages
+node scripts/generate-seo-pages.js
+```
+
+### Available Scripts
+```bash
+npm run start       # Start local server (port 8000)
+npm run dev         # Development server (port 8080)
+npm run build       # Build for production
+npm run test        # Run tests
+npm run lighthouse  # Performance audit
+```
+
+## 📈 SEO & Marketing
+
+### Programmatic SEO Strategy
+- **64 SEO-optimized pages** targeting low-competition keywords
+- **DataForSEO integration** for real keyword research
+- **3-phase rollout**: City pages → Professional guides → Business districts
+- **Target**: 10,000+ monthly organic visitors
+
+### Key Target Keywords
+- `prayer times [city]` (2,000+ monthly searches)
+- `muslim professional prayer schedule` (300+ searches)
+- `[city] airport prayer room` (500+ searches)
+- `prayer times calendar integration` (200+ searches)
+
+### Growth Projections
+- **Week 1**: 500+ organic visitors
+- **Week 2**: 2,000+ organic visitors  
+- **Week 3**: 5,000+ organic visitors
+- **Week 4**: 10,000+ organic visitors
+
+## 🌍 Deployment
+
+### Vercel (Recommended)
+1. Fork this repository
+2. Connect to Vercel: [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgfarooqi%2Fprayersync)
+3. Vercel will automatically deploy on every push to main
+
+### Environment Variables
+Set these in your Vercel dashboard:
+```
+DATAFORSEO_LOGIN=your-email@domain.com
+DATAFORSEO_PASSWORD=your-api-password
+```
+
+### Manual Deployment
+```bash
+# Build and deploy
+npm run build
+vercel --prod
+```
+
+## 🎯 Target Audience
+
+### Primary Users
+- **Muslim Professionals**: Executives, consultants, lawyers, doctors
+- **Business Travelers**: Frequent flyers who need prayer times globally
+- **Tech Workers**: Muslim developers, designers, product managers
+- **Corporate Muslims**: Employees in non-Muslim majority companies
+
+### Use Cases
+- Sync prayer times with work calendar
+- Avoid scheduling conflicts with meetings
+- Find prayer facilities while traveling
+- Maintain prayer consistency during business travel
+- Professional prayer break planning
+
+## 📊 Features in Detail
+
+### Calendar Integration
+- **Universal Format**: .ics files work with all calendar apps
+- **Professional Descriptions**: Shows as "Personal Time" to colleagues
+- **Automatic Duration**: Configurable prayer duration (15-45 minutes)
+- **Smart Reminders**: Customizable reminder times
+
+### Travel Support
+- **500+ Cities**: Major business destinations worldwide
+- **Airport Guides**: Prayer room locations and facilities
+- **Time Zone Handling**: Automatic adjustments for travel
+- **Offline Mode**: Works without internet connection
+
+### Professional Features
+- **Meeting Conflict Detection**: Warns about prayer/meeting overlaps
+- **Discrete Notifications**: Professional-friendly alerts
+- **Multiple Calculation Methods**: Various Islamic schools of thought
+- **Workplace Integration**: Calendar sync for corporate environments
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md).
+
+### Development Workflow
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Prayer Time Calculations**: Based on astronomical formulas
+- **Islamic Calendar**: Hijri date calculations
+- **Community**: Built for the global Muslim professional community
+- **Open Source**: Standing on the shoulders of giants
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/gfarooqi/prayersync/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/gfarooqi/prayersync/discussions)
+- **Email**: support@prayersync.com
+
+---
+
+**Made with ❤️ for the Muslim professional community**
+
+*"And establish prayer and give zakah and bow with those who bow" - Quran 2:43*
