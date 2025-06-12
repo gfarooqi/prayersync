@@ -1,0 +1,52 @@
+{
+  "cityPage": {
+    "structure": [
+      "Hero section with current prayer times",
+      "Today's prayer schedule widget",
+      "Calendar export options",
+      "Nearby mosque locations",
+      "Business-friendly prayer guides",
+      "FAQ section",
+      "Local Islamic resources"
+    ],
+    "seoElements": {
+      "h1": "Prayer Times in {city} - Professional Calendar Integration",
+      "h2s": [
+        "Today's Prayer Schedule for {city}",
+        "Export Prayer Times to Your Calendar",
+        "Mosque Locations in {city}",
+        "Prayer Guidelines for Professionals"
+      ],
+      "metaDescription": "Accurate prayer times for {city}. Export to Google Calendar, Outlook. Perfect for Muslim professionals and business travelers."
+    }
+  },
+  "airportPage": {
+    "structure": [
+      "Airport prayer facilities overview",
+      "Prayer room locations and hours",
+      "Qibla direction information",
+      "Prayer time adjustments for travel",
+      "Connecting flight prayer planning",
+      "Airport-specific tips"
+    ],
+    "seoElements": {
+      "h1": "{city} Airport Prayer Room Guide",
+      "h2s": [
+        "Prayer Facilities at {city} Airport",
+        "Prayer Room Locations and Access",
+        "Travel Prayer Time Calculations",
+        "Connecting Flight Prayer Planning"
+      ]
+    }
+  },
+  "guidePage": {
+    "structure": [
+      "Problem identification",
+      "Step-by-step solutions",
+      "Professional tips and best practices",
+      "Real-world examples",
+      "Tools and resources",
+      "Community insights"
+    ]
+  }
+}

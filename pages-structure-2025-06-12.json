@@ -1,0 +1,914 @@
+[
+  {
+    "type": "city",
+    "url": "/prayer-times-new-york",
+    "title": "Prayer Times in New York - Professional Calendar Integration",
+    "description": "Accurate prayer times for New York. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times new york",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "country": "USA",
+      "timezone": "America/New_York"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-new-york-downtown",
+    "title": "Prayer Times New York downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in New York downtown. Calendar integration for professionals.",
+    "keyword": "prayer times new york downtown",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "country": "USA",
+      "timezone": "America/New_York"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-new-york-financial-district",
+    "title": "Prayer Times New York financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in New York financial district. Calendar integration for professionals.",
+    "keyword": "prayer times new york financial district",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "country": "USA",
+      "timezone": "America/New_York"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-new-york-business-district",
+    "title": "Prayer Times New York business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in New York business district. Calendar integration for professionals.",
+    "keyword": "prayer times new york business district",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "country": "USA",
+      "timezone": "America/New_York"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-new-york-city-center",
+    "title": "Prayer Times New York city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in New York city center. Calendar integration for professionals.",
+    "keyword": "prayer times new york city center",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "country": "USA",
+      "timezone": "America/New_York"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-new-york-airport",
+    "title": "New York Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at New York airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "new york airport prayer room",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "country": "USA",
+      "timezone": "America/New_York"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "city",
+    "url": "/prayer-times-london",
+    "title": "Prayer Times in London - Professional Calendar Integration",
+    "description": "Accurate prayer times for London. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times london",
+    "city": {
+      "name": "London",
+      "slug": "london",
+      "country": "UK",
+      "timezone": "Europe/London"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-london-downtown",
+    "title": "Prayer Times London downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in London downtown. Calendar integration for professionals.",
+    "keyword": "prayer times london downtown",
+    "city": {
+      "name": "London",
+      "slug": "london",
+      "country": "UK",
+      "timezone": "Europe/London"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-london-financial-district",
+    "title": "Prayer Times London financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in London financial district. Calendar integration for professionals.",
+    "keyword": "prayer times london financial district",
+    "city": {
+      "name": "London",
+      "slug": "london",
+      "country": "UK",
+      "timezone": "Europe/London"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-london-business-district",
+    "title": "Prayer Times London business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in London business district. Calendar integration for professionals.",
+    "keyword": "prayer times london business district",
+    "city": {
+      "name": "London",
+      "slug": "london",
+      "country": "UK",
+      "timezone": "Europe/London"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-london-city-center",
+    "title": "Prayer Times London city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in London city center. Calendar integration for professionals.",
+    "keyword": "prayer times london city center",
+    "city": {
+      "name": "London",
+      "slug": "london",
+      "country": "UK",
+      "timezone": "Europe/London"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-london-airport",
+    "title": "London Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at London airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "london airport prayer room",
+    "city": {
+      "name": "London",
+      "slug": "london",
+      "country": "UK",
+      "timezone": "Europe/London"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "city",
+    "url": "/prayer-times-toronto",
+    "title": "Prayer Times in Toronto - Professional Calendar Integration",
+    "description": "Accurate prayer times for Toronto. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times toronto",
+    "city": {
+      "name": "Toronto",
+      "slug": "toronto",
+      "country": "Canada",
+      "timezone": "America/Toronto"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-toronto-downtown",
+    "title": "Prayer Times Toronto downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Toronto downtown. Calendar integration for professionals.",
+    "keyword": "prayer times toronto downtown",
+    "city": {
+      "name": "Toronto",
+      "slug": "toronto",
+      "country": "Canada",
+      "timezone": "America/Toronto"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-toronto-financial-district",
+    "title": "Prayer Times Toronto financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Toronto financial district. Calendar integration for professionals.",
+    "keyword": "prayer times toronto financial district",
+    "city": {
+      "name": "Toronto",
+      "slug": "toronto",
+      "country": "Canada",
+      "timezone": "America/Toronto"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-toronto-business-district",
+    "title": "Prayer Times Toronto business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Toronto business district. Calendar integration for professionals.",
+    "keyword": "prayer times toronto business district",
+    "city": {
+      "name": "Toronto",
+      "slug": "toronto",
+      "country": "Canada",
+      "timezone": "America/Toronto"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-toronto-city-center",
+    "title": "Prayer Times Toronto city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Toronto city center. Calendar integration for professionals.",
+    "keyword": "prayer times toronto city center",
+    "city": {
+      "name": "Toronto",
+      "slug": "toronto",
+      "country": "Canada",
+      "timezone": "America/Toronto"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-toronto-airport",
+    "title": "Toronto Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at Toronto airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "toronto airport prayer room",
+    "city": {
+      "name": "Toronto",
+      "slug": "toronto",
+      "country": "Canada",
+      "timezone": "America/Toronto"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "city",
+    "url": "/prayer-times-dubai",
+    "title": "Prayer Times in Dubai - Professional Calendar Integration",
+    "description": "Accurate prayer times for Dubai. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times dubai",
+    "city": {
+      "name": "Dubai",
+      "slug": "dubai",
+      "country": "UAE",
+      "timezone": "Asia/Dubai"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-dubai-downtown",
+    "title": "Prayer Times Dubai downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Dubai downtown. Calendar integration for professionals.",
+    "keyword": "prayer times dubai downtown",
+    "city": {
+      "name": "Dubai",
+      "slug": "dubai",
+      "country": "UAE",
+      "timezone": "Asia/Dubai"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-dubai-financial-district",
+    "title": "Prayer Times Dubai financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Dubai financial district. Calendar integration for professionals.",
+    "keyword": "prayer times dubai financial district",
+    "city": {
+      "name": "Dubai",
+      "slug": "dubai",
+      "country": "UAE",
+      "timezone": "Asia/Dubai"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-dubai-business-district",
+    "title": "Prayer Times Dubai business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Dubai business district. Calendar integration for professionals.",
+    "keyword": "prayer times dubai business district",
+    "city": {
+      "name": "Dubai",
+      "slug": "dubai",
+      "country": "UAE",
+      "timezone": "Asia/Dubai"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-dubai-city-center",
+    "title": "Prayer Times Dubai city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Dubai city center. Calendar integration for professionals.",
+    "keyword": "prayer times dubai city center",
+    "city": {
+      "name": "Dubai",
+      "slug": "dubai",
+      "country": "UAE",
+      "timezone": "Asia/Dubai"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-dubai-airport",
+    "title": "Dubai Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at Dubai airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "dubai airport prayer room",
+    "city": {
+      "name": "Dubai",
+      "slug": "dubai",
+      "country": "UAE",
+      "timezone": "Asia/Dubai"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "city",
+    "url": "/prayer-times-singapore",
+    "title": "Prayer Times in Singapore - Professional Calendar Integration",
+    "description": "Accurate prayer times for Singapore. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times singapore",
+    "city": {
+      "name": "Singapore",
+      "slug": "singapore",
+      "country": "Singapore",
+      "timezone": "Asia/Singapore"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-singapore-downtown",
+    "title": "Prayer Times Singapore downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Singapore downtown. Calendar integration for professionals.",
+    "keyword": "prayer times singapore downtown",
+    "city": {
+      "name": "Singapore",
+      "slug": "singapore",
+      "country": "Singapore",
+      "timezone": "Asia/Singapore"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-singapore-financial-district",
+    "title": "Prayer Times Singapore financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Singapore financial district. Calendar integration for professionals.",
+    "keyword": "prayer times singapore financial district",
+    "city": {
+      "name": "Singapore",
+      "slug": "singapore",
+      "country": "Singapore",
+      "timezone": "Asia/Singapore"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-singapore-business-district",
+    "title": "Prayer Times Singapore business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Singapore business district. Calendar integration for professionals.",
+    "keyword": "prayer times singapore business district",
+    "city": {
+      "name": "Singapore",
+      "slug": "singapore",
+      "country": "Singapore",
+      "timezone": "Asia/Singapore"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-singapore-city-center",
+    "title": "Prayer Times Singapore city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Singapore city center. Calendar integration for professionals.",
+    "keyword": "prayer times singapore city center",
+    "city": {
+      "name": "Singapore",
+      "slug": "singapore",
+      "country": "Singapore",
+      "timezone": "Asia/Singapore"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-singapore-airport",
+    "title": "Singapore Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at Singapore airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "singapore airport prayer room",
+    "city": {
+      "name": "Singapore",
+      "slug": "singapore",
+      "country": "Singapore",
+      "timezone": "Asia/Singapore"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "city",
+    "url": "/prayer-times-sydney",
+    "title": "Prayer Times in Sydney - Professional Calendar Integration",
+    "description": "Accurate prayer times for Sydney. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times sydney",
+    "city": {
+      "name": "Sydney",
+      "slug": "sydney",
+      "country": "Australia",
+      "timezone": "Australia/Sydney"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-sydney-downtown",
+    "title": "Prayer Times Sydney downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Sydney downtown. Calendar integration for professionals.",
+    "keyword": "prayer times sydney downtown",
+    "city": {
+      "name": "Sydney",
+      "slug": "sydney",
+      "country": "Australia",
+      "timezone": "Australia/Sydney"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-sydney-financial-district",
+    "title": "Prayer Times Sydney financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Sydney financial district. Calendar integration for professionals.",
+    "keyword": "prayer times sydney financial district",
+    "city": {
+      "name": "Sydney",
+      "slug": "sydney",
+      "country": "Australia",
+      "timezone": "Australia/Sydney"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-sydney-business-district",
+    "title": "Prayer Times Sydney business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Sydney business district. Calendar integration for professionals.",
+    "keyword": "prayer times sydney business district",
+    "city": {
+      "name": "Sydney",
+      "slug": "sydney",
+      "country": "Australia",
+      "timezone": "Australia/Sydney"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-sydney-city-center",
+    "title": "Prayer Times Sydney city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Sydney city center. Calendar integration for professionals.",
+    "keyword": "prayer times sydney city center",
+    "city": {
+      "name": "Sydney",
+      "slug": "sydney",
+      "country": "Australia",
+      "timezone": "Australia/Sydney"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-sydney-airport",
+    "title": "Sydney Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at Sydney airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "sydney airport prayer room",
+    "city": {
+      "name": "Sydney",
+      "slug": "sydney",
+      "country": "Australia",
+      "timezone": "Australia/Sydney"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "city",
+    "url": "/prayer-times-kuala-lumpur",
+    "title": "Prayer Times in Kuala Lumpur - Professional Calendar Integration",
+    "description": "Accurate prayer times for Kuala Lumpur. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times kuala lumpur",
+    "city": {
+      "name": "Kuala Lumpur",
+      "slug": "kuala-lumpur",
+      "country": "Malaysia",
+      "timezone": "Asia/Kuala_Lumpur"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-kuala-lumpur-downtown",
+    "title": "Prayer Times Kuala Lumpur downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Kuala Lumpur downtown. Calendar integration for professionals.",
+    "keyword": "prayer times kuala lumpur downtown",
+    "city": {
+      "name": "Kuala Lumpur",
+      "slug": "kuala-lumpur",
+      "country": "Malaysia",
+      "timezone": "Asia/Kuala_Lumpur"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-kuala-lumpur-financial-district",
+    "title": "Prayer Times Kuala Lumpur financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Kuala Lumpur financial district. Calendar integration for professionals.",
+    "keyword": "prayer times kuala lumpur financial district",
+    "city": {
+      "name": "Kuala Lumpur",
+      "slug": "kuala-lumpur",
+      "country": "Malaysia",
+      "timezone": "Asia/Kuala_Lumpur"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-kuala-lumpur-business-district",
+    "title": "Prayer Times Kuala Lumpur business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Kuala Lumpur business district. Calendar integration for professionals.",
+    "keyword": "prayer times kuala lumpur business district",
+    "city": {
+      "name": "Kuala Lumpur",
+      "slug": "kuala-lumpur",
+      "country": "Malaysia",
+      "timezone": "Asia/Kuala_Lumpur"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-kuala-lumpur-city-center",
+    "title": "Prayer Times Kuala Lumpur city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Kuala Lumpur city center. Calendar integration for professionals.",
+    "keyword": "prayer times kuala lumpur city center",
+    "city": {
+      "name": "Kuala Lumpur",
+      "slug": "kuala-lumpur",
+      "country": "Malaysia",
+      "timezone": "Asia/Kuala_Lumpur"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-kuala-lumpur-airport",
+    "title": "Kuala Lumpur Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at Kuala Lumpur airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "kuala lumpur airport prayer room",
+    "city": {
+      "name": "Kuala Lumpur",
+      "slug": "kuala-lumpur",
+      "country": "Malaysia",
+      "timezone": "Asia/Kuala_Lumpur"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "city",
+    "url": "/prayer-times-istanbul",
+    "title": "Prayer Times in Istanbul - Professional Calendar Integration",
+    "description": "Accurate prayer times for Istanbul. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times istanbul",
+    "city": {
+      "name": "Istanbul",
+      "slug": "istanbul",
+      "country": "Turkey",
+      "timezone": "Europe/Istanbul"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-istanbul-downtown",
+    "title": "Prayer Times Istanbul downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Istanbul downtown. Calendar integration for professionals.",
+    "keyword": "prayer times istanbul downtown",
+    "city": {
+      "name": "Istanbul",
+      "slug": "istanbul",
+      "country": "Turkey",
+      "timezone": "Europe/Istanbul"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-istanbul-financial-district",
+    "title": "Prayer Times Istanbul financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Istanbul financial district. Calendar integration for professionals.",
+    "keyword": "prayer times istanbul financial district",
+    "city": {
+      "name": "Istanbul",
+      "slug": "istanbul",
+      "country": "Turkey",
+      "timezone": "Europe/Istanbul"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-istanbul-business-district",
+    "title": "Prayer Times Istanbul business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Istanbul business district. Calendar integration for professionals.",
+    "keyword": "prayer times istanbul business district",
+    "city": {
+      "name": "Istanbul",
+      "slug": "istanbul",
+      "country": "Turkey",
+      "timezone": "Europe/Istanbul"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-istanbul-city-center",
+    "title": "Prayer Times Istanbul city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Istanbul city center. Calendar integration for professionals.",
+    "keyword": "prayer times istanbul city center",
+    "city": {
+      "name": "Istanbul",
+      "slug": "istanbul",
+      "country": "Turkey",
+      "timezone": "Europe/Istanbul"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-istanbul-airport",
+    "title": "Istanbul Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at Istanbul airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "istanbul airport prayer room",
+    "city": {
+      "name": "Istanbul",
+      "slug": "istanbul",
+      "country": "Turkey",
+      "timezone": "Europe/Istanbul"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "city",
+    "url": "/prayer-times-chicago",
+    "title": "Prayer Times in Chicago - Professional Calendar Integration",
+    "description": "Accurate prayer times for Chicago. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times chicago",
+    "city": {
+      "name": "Chicago",
+      "slug": "chicago",
+      "country": "USA",
+      "timezone": "America/Chicago"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-chicago-downtown",
+    "title": "Prayer Times Chicago downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Chicago downtown. Calendar integration for professionals.",
+    "keyword": "prayer times chicago downtown",
+    "city": {
+      "name": "Chicago",
+      "slug": "chicago",
+      "country": "USA",
+      "timezone": "America/Chicago"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-chicago-financial-district",
+    "title": "Prayer Times Chicago financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Chicago financial district. Calendar integration for professionals.",
+    "keyword": "prayer times chicago financial district",
+    "city": {
+      "name": "Chicago",
+      "slug": "chicago",
+      "country": "USA",
+      "timezone": "America/Chicago"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-chicago-business-district",
+    "title": "Prayer Times Chicago business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Chicago business district. Calendar integration for professionals.",
+    "keyword": "prayer times chicago business district",
+    "city": {
+      "name": "Chicago",
+      "slug": "chicago",
+      "country": "USA",
+      "timezone": "America/Chicago"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-chicago-city-center",
+    "title": "Prayer Times Chicago city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Chicago city center. Calendar integration for professionals.",
+    "keyword": "prayer times chicago city center",
+    "city": {
+      "name": "Chicago",
+      "slug": "chicago",
+      "country": "USA",
+      "timezone": "America/Chicago"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-chicago-airport",
+    "title": "Chicago Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at Chicago airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "chicago airport prayer room",
+    "city": {
+      "name": "Chicago",
+      "slug": "chicago",
+      "country": "USA",
+      "timezone": "America/Chicago"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "city",
+    "url": "/prayer-times-los-angeles",
+    "title": "Prayer Times in Los Angeles - Professional Calendar Integration",
+    "description": "Accurate prayer times for Los Angeles. Export to Google Calendar, Outlook. Perfect for Muslim professionals.",
+    "keyword": "prayer times los angeles",
+    "city": {
+      "name": "Los Angeles",
+      "slug": "los-angeles",
+      "country": "USA",
+      "timezone": "America/Los_Angeles"
+    },
+    "priority": "high"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-los-angeles-downtown",
+    "title": "Prayer Times Los Angeles downtown - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Los Angeles downtown. Calendar integration for professionals.",
+    "keyword": "prayer times los angeles downtown",
+    "city": {
+      "name": "Los Angeles",
+      "slug": "los-angeles",
+      "country": "USA",
+      "timezone": "America/Los_Angeles"
+    },
+    "area": "downtown",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-los-angeles-financial-district",
+    "title": "Prayer Times Los Angeles financial district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Los Angeles financial district. Calendar integration for professionals.",
+    "keyword": "prayer times los angeles financial district",
+    "city": {
+      "name": "Los Angeles",
+      "slug": "los-angeles",
+      "country": "USA",
+      "timezone": "America/Los_Angeles"
+    },
+    "area": "financial-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-los-angeles-business-district",
+    "title": "Prayer Times Los Angeles business district - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Los Angeles business district. Calendar integration for professionals.",
+    "keyword": "prayer times los angeles business district",
+    "city": {
+      "name": "Los Angeles",
+      "slug": "los-angeles",
+      "country": "USA",
+      "timezone": "America/Los_Angeles"
+    },
+    "area": "business-district",
+    "priority": "medium"
+  },
+  {
+    "type": "business-area",
+    "url": "/prayer-times-los-angeles-city-center",
+    "title": "Prayer Times Los Angeles city center - Business Professional Guide",
+    "description": "Prayer times and mosque locations in Los Angeles city center. Calendar integration for professionals.",
+    "keyword": "prayer times los angeles city center",
+    "city": {
+      "name": "Los Angeles",
+      "slug": "los-angeles",
+      "country": "USA",
+      "timezone": "America/Los_Angeles"
+    },
+    "area": "city-center",
+    "priority": "medium"
+  },
+  {
+    "type": "airport",
+    "url": "/prayer-room-los-angeles-airport",
+    "title": "Los Angeles Airport Prayer Room Guide - Muslim Travel Tips",
+    "description": "Prayer facilities at Los Angeles airport. Prayer times, qibla direction, and traveler guide.",
+    "keyword": "los angeles airport prayer room",
+    "city": {
+      "name": "Los Angeles",
+      "slug": "los-angeles",
+      "country": "USA",
+      "timezone": "America/Los_Angeles"
+    },
+    "priority": "medium"
+  },
+  {
+    "type": "guide",
+    "url": "/meeting-prayer-conflict",
+    "title": "How to Handle Prayer-Meeting Conflicts as a Muslim Professional",
+    "description": "How to Handle Prayer-Meeting Conflicts as a Muslim Professional. Practical advice for Muslim professionals.",
+    "keyword": "prayer meeting conflict professional",
+    "priority": "high"
+  },
+  {
+    "type": "guide",
+    "url": "/workplace-prayer-setup",
+    "title": "Setting Up Prayer Space in Your Workplace - Complete Guide",
+    "description": "Setting Up Prayer Space in Your Workplace - Complete Guide. Practical advice for Muslim professionals.",
+    "keyword": "workplace prayer space setup",
+    "priority": "high"
+  },
+  {
+    "type": "guide",
+    "url": "/business-travel-prayer",
+    "title": "Muslim Business Travel Guide - Prayer Times & Airport Facilities",
+    "description": "Muslim Business Travel Guide - Prayer Times & Airport Facilities. Practical advice for Muslim professionals.",
+    "keyword": "muslim business travel prayer guide",
+    "priority": "high"
+  },
+  {
+    "type": "guide",
+    "url": "/ramadan-work-schedule",
+    "title": "Managing Work Schedule During Ramadan - Professional Tips",
+    "description": "Managing Work Schedule During Ramadan - Professional Tips. Practical advice for Muslim professionals.",
+    "keyword": "ramadan work schedule tips",
+    "priority": "high"
+  }
+]
