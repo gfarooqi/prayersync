@@ -46,9 +46,16 @@ jobs:
           cp *.png dist/ 2>/dev/null || true
           cp *.svg dist/ 2>/dev/null || true
           
+          # Copy SEO pages
+          cp -r pages dist/ 2>/dev/null || true
+          cp all-pages.html dist/ 2>/dev/null || true
+          
           # Update file references in index.html for production
           sed -i 's/styles-production.css/styles.css/g' dist/index.html
           sed -i 's/app-production.js/app.js/g' dist/index.html
+          
+          # Update CSS references in SEO pages
+          find dist/pages -name "*.html" -exec sed -i 's|../styles-production.css|../styles.css|g' {} \;
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
