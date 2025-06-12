@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrayerSync - Never Miss a Prayer as a Busy Professional | Prayer Times Calendar Integration</title>
+    <meta name="description" content="Automatically sync prayer times with your business calendar. Smart conflict detection. Join 10,000+ Muslim professionals who never miss prayer. Free trial.">
+    <link rel="stylesheet" href="styles-production.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a5f">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="PrayerSync - Prayer Times Calendar Integration for Muslim Professionals">
+    <meta property="og:description" content="Never miss a prayer or double-book a meeting. Automatic prayer times in your business calendar.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://prayersync.com">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="landing-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                </svg>
+                PrayerSync
+            </div>
+            <button class="nav-btn" onclick="scrollToApp()">Try Free App</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Never Miss a Prayer as a Busy Professional</h1>
+            <p class="hero-subtitle">Automatically sync prayer times with your business calendar. Smart conflict detection. Travel-friendly updates. Join 10,000+ Muslim professionals designing life around prayers.</p>
+            
+            <div class="hero-buttons">
+                <button class="btn-primary large" onclick="scrollToApp()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                    </svg>
+                    Start Free Trial - No Credit Card
+                </button>
+                <a href="#features" class="btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    Watch Demo
+                </a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Muslim Professionals</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">Prayer Success Rate</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Countries</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="mini-prayer-card active">
+                        <div class="mini-prayer-name">Dhuhr</div>
+                        <div class="mini-prayer-time">12:45 PM</div>
+                    </div>
+                    <div class="mini-prayer-card">
+                        <div class="mini-prayer-name">Asr</div>
+                        <div class="mini-prayer-time">4:15 PM</div>
+                    </div>
+                    <div class="mini-prayer-card">
+                        <div class="mini-prayer-name">Maghrib</div>
+                        <div class="mini-prayer-time">6:30 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">How PrayerSync Transforms Your Professional Life</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+                        </svg>
+                    </div>
+                    <h3>Automatic Calendar Sync</h3>
+                    <p>Prayer times appear as calendar blocks in Google Calendar, Outlook, and Apple Calendar. No more scheduling conflicts.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h3>Meeting Conflict Alerts</h3>
+                    <p>Get warned when meetings overlap with prayer times. Smart suggestions for alternative meeting times.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                    </div>
+                    <h3>Travel Mode</h3>
+                    <p>Automatic prayer time updates when you change locations. Perfect for business travel and commuting.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h3>Prayer Tracking</h3>
+                    <p>Track completed prayers and makeup prayers (Qada). Visual progress and habit building for consistency.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V5l-10-4z"/>
+                        </svg>
+                    </div>
+                    <h3>Professional Privacy</h3>
+                    <p>Discrete notifications and professional calendar descriptions. Your colleagues see "Personal Time" blocks.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 11l3-3 3 3-1.41 1.41L12 10.83 10.41 12.41 9 11zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                        </svg>
+                    </div>
+                    <h3>Qibla Compass</h3>
+                    <p>Accurate direction to Mecca from anywhere in the world. Works offline during travel and in conference rooms.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Design Your Life Around Prayers?</h2>
+            <p>Join 10,000+ Muslim professionals who never miss prayer. Free 30-day trial, no credit card required.</p>
+            <button class="btn-primary large" onclick="scrollToApp()">Start Free Trial Now</button>
+        </div>
+    </section>
+
+    <!-- App Interface Section -->
+    <div class="main-app" id="app" style="display: none;">
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="back-btn" onclick="showLanding()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                    </button>
+                    <h1>PrayerSync</h1>
+                </div>
+                <div class="location-badge" onclick="openLocationModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <span id="currentLocation">Detecting location...</span>
+                    <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 10l5 5 5-5z"/>
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <div class="app-container">
+                <!-- Date Section -->
+                <div class="date-section">
+                    <h2 id="currentDate">Loading...</h2>
+                    <p class="hijri-date" id="hijriDate">Loading Hijri date...</p>
+                </div>
+
+                <!-- Prayer Times -->
+                <div class="prayers-section">
+                    <h3>Today's Prayer Times</h3>
+                    <div class="prayer-cards" id="prayerCards">
+                        <div class="prayer-card" data-prayer="fajr">
+                            <div class="prayer-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79zM1 10.5h3v2H1zM11 .55h2V3.5h-2zm8.04 2.495l1.408 1.407-1.79 1.79-1.407-1.408zm-1.8 15.115l1.79 1.8 1.41-1.41-1.8-1.79zM20 10.5h3v2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/>
+                                </svg>
+                            </div>
+                            <div class="prayer-info">
+                                <h4>Fajr</h4>
+                                <p>Dawn Prayer</p>
+                            </div>
+                            <div class="prayer-time">--:--</div>
+                        </div>
+
+                        <div class="prayer-card" data-prayer="dhuhr">
+                            <div class="prayer-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                            </div>
+                            <div class="prayer-info">
+                                <h4>Dhuhr</h4>
+                                <p>Noon Prayer</p>
+                            </div>
+                            <div class="prayer-time">--:--</div>
+                        </div>
+
+                        <div class="prayer-card" data-prayer="asr">
+                            <div class="prayer-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                            </div>
+                            <div class="prayer-info">
+                                <h4>Asr</h4>
+                                <p>Afternoon Prayer</p>
+                            </div>
+                            <div class="prayer-time">--:--</div>
+                        </div>
+
+                        <div class="prayer-card" data-prayer="maghrib">
+                            <div class="prayer-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+                                </svg>
+                            </div>
+                            <div class="prayer-info">
+                                <h4>Maghrib</h4>
+                                <p>Sunset Prayer</p>
+                            </div>
+                            <div class="prayer-time">--:--</div>
+                        </div>
+
+                        <div class="prayer-card" data-prayer="isha">
+                            <div class="prayer-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+                                </svg>
+                            </div>
+                            <div class="prayer-info">
+                                <h4>Isha</h4>
+                                <p>Night Prayer</p>
+                            </div>
+                            <div class="prayer-time">--:--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Countdown Section -->
+                <div class="countdown-section">
+                    <h3>Next Prayer</h3>
+                    <div class="countdown-card">
+                        <div class="countdown-prayer" id="nextPrayerName">Loading...</div>
+                        <div class="countdown-timer" id="countdown">--:--:--</div>
+                        <div class="countdown-progress">
+                            <div class="progress-bar" id="countdownProgress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Export Section -->
+                <div class="sync-section">
+                    <h3>Calendar Integration</h3>
+                    <p class="sync-description">Export prayer times to your calendar app for seamless scheduling</p>
+                    
+                    <div class="sync-buttons">
+                        <button class="export-btn" onclick="exportToday()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+                            </svg>
+                            Today
+                        </button>
+                        
+                        <button class="export-btn" onclick="exportWeek()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 11l3-3 3 3-1.41 1.41L12 10.83 10.41 12.41 9 11zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                            </svg>
+                            This Week
+                        </button>
+                        
+                        <button class="export-btn" onclick="exportMonth()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                            </svg>
+                            This Month
+                        </button>
+                    </div>
+
+                    <div class="import-instructions">
+                        <h4>How to Import to Your Calendar:</h4>
+                        <ul>
+                            <li><strong>Google Calendar:</strong> Download file → Go to calendar.google.com → Settings → Import & Export</li>
+                            <li><strong>Outlook:</strong> Download file → Open Outlook → File → Import → Calendar</li>
+                            <li><strong>Apple Calendar:</strong> Download file → Double-click file → Import</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div class="settings-card">
+                    <h3>Settings</h3>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label for="calcMethod">Calculation Method</label>
+                            <select id="calcMethod" class="setting-select">
+                                <option value="MWL">Muslim World League</option>
+                                <option value="ISNA">Islamic Society of North America</option>
+                                <option value="Egypt">Egyptian General Authority</option>
+                                <option value="Makkah">Umm al-Qura, Makkah</option>
+                                <option value="Karachi">University of Islamic Sciences, Karachi</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Location Modal -->
+    <div class="modal" id="locationModal" style="display: none;">
+        <div class="modal-content location-modal">
+            <div class="modal-header">
+                <h2>Select Location</h2>
+                <button type="button" class="modal-close" onclick="closeLocationModal()">&times;</button>
+            </div>
+            
+            <div class="location-options">
+                <!-- Current Location Option -->
+                <button type="button" class="location-option" onclick="useCurrentLocation()">
+                    <div class="option-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                        </svg>
+                    </div>
+                    <div class="option-content">
+                        <div class="option-title">Use Current Location</div>
+                        <div class="option-desc">Automatically detect your location</div>
+                    </div>
+                </button>
+
+                <!-- Search Location -->
+                <div class="location-search">
+                    <div class="search-header">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <span>Search City</span>
+                    </div>
+                    <div class="search-input-wrapper">
+                        <input type="text" id="locationSearch" placeholder="Enter city name..." autocomplete="off">
+                        <div class="search-suggestions" id="searchSuggestions"></div>
+                    </div>
+                </div>
+
+                <!-- Popular Cities -->
+                <div class="popular-cities">
+                    <h3>Popular Cities</h3>
+                    <div class="city-grid">
+                        <button type="button" class="city-btn" onclick="selectCity('Mecca', 'Saudi Arabia', 21.4225, 39.8262, 'Asia/Riyadh')">Mecca</button>
+                        <button type="button" class="city-btn" onclick="selectCity('Medina', 'Saudi Arabia', 24.5247, 39.5692, 'Asia/Riyadh')">Medina</button>
+                        <button type="button" class="city-btn" onclick="selectCity('Istanbul', 'Turkey', 41.0082, 28.9784, 'Europe/Istanbul')">Istanbul</button>
+                        <button type="button" class="city-btn" onclick="selectCity('Cairo', 'Egypt', 30.0444, 31.2357, 'Africa/Cairo')">Cairo</button>
+                        <button type="button" class="city-btn" onclick="selectCity('Dubai', 'UAE', 25.2048, 55.2708, 'Asia/Dubai')">Dubai</button>
+                        <button type="button" class="city-btn" onclick="selectCity('London', 'UK', 51.5074, -0.1278, 'Europe/London')">London</button>
+                        <button type="button" class="city-btn" onclick="selectCity('New York', 'USA', 40.7128, -74.0060, 'America/New_York')">New York</button>
+                        <button type="button" class="city-btn" onclick="selectCity('Toronto', 'Canada', 43.6532, -79.3832, 'America/Toronto')">Toronto</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app-production.js"></script>
+    
+    <!-- Landing Page Navigation Script -->
+    <script>
+        function scrollToApp() {
+            document.querySelector('.landing-page').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            // Initialize app if needed
+            if (typeof initializeApp === 'function') {
+                initializeApp();
+            }
+        }
+
+        function showLanding() {
+            document.querySelector('.landing-page').style.display = 'block';
+            document.getElementById('app').style.display = 'none';
+        }
+
+        // Smooth scrolling for anchor links
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

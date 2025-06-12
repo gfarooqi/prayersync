@@ -1,0 +1,67 @@
+<!-- PrayerSync App Icon - 512x512 Base SVG -->
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="256" fill="url(#backgroundGradient)"/>
+  
+  <!-- Mosque Silhouette -->
+  <g transform="translate(86, 120)">
+    <!-- Main Dome -->
+    <path d="M170 180C170 140 200 110 240 110C280 110 310 140 310 180V280H170V180Z" fill="#ffffff" opacity="0.95"/>
+    
+    <!-- Minaret 1 -->
+    <rect x="100" y="80" width="20" height="200" fill="#ffffff" opacity="0.9"/>
+    <circle cx="110" cy="80" r="15" fill="#ffffff" opacity="0.9"/>
+    
+    <!-- Minaret 2 -->
+    <rect x="360" y="80" width="20" height="200" fill="#ffffff" opacity="0.9"/>
+    <circle cx="370" cy="80" r="15" fill="#ffffff" opacity="0.9"/>
+    
+    <!-- Central Minaret -->
+    <rect x="235" y="40" width="30" height="70" fill="#ffffff" opacity="0.95"/>
+    <path d="M250 40L235 25H265L250 40Z" fill="#ffffff" opacity="0.95"/>
+    
+    <!-- Crescent -->
+    <path d="M245 25C245 20 248 15 253 15C258 15 261 20 261 25C261 22 259 20 256 20C253 20 251 22 251 25H245Z" fill="#ffd700"/>
+    
+    <!-- Base Structure -->
+    <rect x="120" y="240" width="240" height="80" fill="#ffffff" opacity="0.9"/>
+    
+    <!-- Entrance Arch -->
+    <path d="M200 280C200 260 215 245 235 245C255 245 270 260 270 280V320H200V280Z" fill="url(#backgroundGradient)"/>
+    
+    <!-- Side Arches -->
+    <path d="M140 300C140 290 147 280 157 280C167 280 174 290 174 300V320H140V300Z" fill="url(#backgroundGradient)" opacity="0.7"/>
+    <path d="M306 300C306 290 313 280 323 280C333 280 340 290 340 300V320H306V300Z" fill="url(#backgroundGradient)" opacity="0.7"/>
+  </g>
+  
+  <!-- Prayer Time Indicator -->
+  <g transform="translate(200, 350)">
+    <!-- Clock Face -->
+    <circle cx="56" cy="56" r="50" fill="#ffffff" opacity="0.9" stroke="url(#backgroundGradient)" stroke-width="4"/>
+    
+    <!-- Clock Hands -->
+    <line x1="56" y1="56" x2="56" y2="20" stroke="url(#backgroundGradient)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="56" y1="56" x2="80" y2="56" stroke="url(#backgroundGradient)" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Center Dot -->
+    <circle cx="56" cy="56" r="4" fill="url(#backgroundGradient)"/>
+  </g>
+  
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a5f;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2c4a70;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Apply shadow to main elements -->
+  <style>
+    .mosque-shadow { filter: url(#dropShadow); }
+  </style>
+</svg>
