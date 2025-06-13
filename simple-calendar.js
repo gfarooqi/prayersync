@@ -79,36 +79,64 @@ function getIcsUtcString(apiDate, prayerTime, timezone) {
     return correctUtcDate.toISOString().replace(/[-:.]/g, '').substring(0, 15) + 'Z';
 }
 
+// Prevent infinite loops
+let isUpdatingLocation = false;
+
 // Handle location selection from dropdown
 function updateSelectedLocation() {
-    const select = document.getElementById('citySelect');
-    const buttonText = document.getElementById('downloadButtonText');
+    // Prevent recursive calls
+    if (isUpdatingLocation) {
+        console.log('🚫 updateSelectedLocation blocked - already updating');
+        return;
+    }
     
-    if (select.value) {
-        const [lat, lon, cityName, timezone] = select.value.split(',');
-        selectedLocation = {
-            lat: parseFloat(lat),
-            lon: parseFloat(lon),
-            cityName: cityName,
-            timezone: timezone
-        };
+    console.log('🔍 updateSelectedLocation called');
+    isUpdatingLocation = true;
+    
+    try {
+        const select = document.getElementById('citySelect');
+        const buttonText = document.getElementById('downloadButtonText');
         
-        // Update button text
-        buttonText.textContent = `Download ${cityName} Prayer Calendar`;
-        
-        // Update current prayer times display if app is loaded
-        if (window.app) {
-            window.app.setLocation({
-                latitude: selectedLocation.lat,
-                longitude: selectedLocation.lon,
-                name: selectedLocation.cityName,
-                timezone: selectedLocation.timezone
-            });
+        if (!select || !buttonText) {
+            console.error('Required elements not found');
+            return;
         }
         
-        showToast(`📍 Location set to ${cityName}`, 'success');
-    } else {
-        buttonText.textContent = 'Download Prayer Calendar Now';
+        if (select.value) {
+            const [lat, lon, cityName, timezone] = select.value.split(',');
+            selectedLocation = {
+                lat: parseFloat(lat),
+                lon: parseFloat(lon),
+                cityName: cityName,
+                timezone: timezone
+            };
+            
+            // Update button text
+            buttonText.textContent = `Download ${cityName} Prayer Calendar`;
+            
+            // Update current prayer times display if app is loaded
+            if (window.app && typeof window.app.setLocation === 'function') {
+                // Don't await this call to avoid blocking
+                window.app.setLocation({
+                    latitude: selectedLocation.lat,
+                    longitude: selectedLocation.lon,
+                    name: selectedLocation.cityName,
+                    timezone: selectedLocation.timezone
+                }, false); // Don't save to recent locations from dropdown
+            }
+            
+            showToast(`📍 Location set to ${cityName}`, 'success');
+        } else {
+            buttonText.textContent = 'Download Prayer Calendar Now';
+        }
+    } catch (error) {
+        console.error('Error in updateSelectedLocation:', error);
+        showToast('❌ Failed to update location', 'error');
+    } finally {
+        // Reset the flag after a short delay
+        setTimeout(() => {
+            isUpdatingLocation = false;
+        }, 100);
     }
 }
 
