@@ -1,3 +1,44 @@
+// Global variables for selected location
+let selectedLocation = {
+    lat: 40.7128, // Default to New York
+    lon: -74.0060,
+    cityName: "New York, NY",
+    timezone: "America/New_York"
+};
+
+// Handle location selection from dropdown
+function updateSelectedLocation() {
+    const select = document.getElementById('citySelect');
+    const buttonText = document.getElementById('downloadButtonText');
+    
+    if (select.value) {
+        const [lat, lon, cityName, timezone] = select.value.split(',');
+        selectedLocation = {
+            lat: parseFloat(lat),
+            lon: parseFloat(lon),
+            cityName: cityName,
+            timezone: timezone
+        };
+        
+        // Update button text
+        buttonText.textContent = `Download ${cityName} Prayer Calendar`;
+        
+        // Update current prayer times display if app is loaded
+        if (window.app) {
+            window.app.setLocation({
+                latitude: selectedLocation.lat,
+                longitude: selectedLocation.lon,
+                name: selectedLocation.cityName,
+                timezone: selectedLocation.timezone
+            });
+        }
+        
+        showToast(`📍 Location set to ${cityName}`, 'success');
+    } else {
+        buttonText.textContent = 'Download Prayer Calendar Now';
+    }
+}
+
 // Simple client-side calendar generation - traffic-first approach
 async function quickDownloadCalendar() {
     try {
@@ -7,17 +48,8 @@ async function quickDownloadCalendar() {
         button.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg> Generating...';
         button.disabled = true;
 
-        // Get current location (simplified for quick deployment)
-        let lat = 40.7128; // Default to New York
-        let lon = -74.0060;
-        let cityName = "New York, NY";
-
-        // Try to get actual location if available
-        if (window.app && window.app.location) {
-            lat = window.app.location.latitude;
-            lon = window.app.location.longitude;
-            cityName = window.app.location.name || "Your Location";
-        }
+        // Use selected location
+        const { lat, lon, cityName } = selectedLocation;
 
         // Fetch prayer times for the current month (quick approach)
         const currentYear = new Date().getFullYear();
@@ -184,5 +216,173 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
-// Make function globally available
+// Calendar Connection Functions
+async function connectGoogleCalendar() {
+    try {
+        // Generate calendar data
+        const { lat, lon, cityName } = selectedLocation;
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1;
+        
+        showToast('🔄 Generating calendar for Google Calendar...', 'info');
+        
+        const response = await fetch(`https://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${lat}&longitude=${lon}&method=2`);
+        const data = await response.json();
+        
+        if (data.code !== 200 || !data.data) {
+            throw new Error('Failed to fetch prayer times');
+        }
+
+        const icalContent = generateSimpleICal(data.data, cityName, lat, lon);
+        
+        // Create a webcal:// URL for direct Google Calendar import
+        const blob = new Blob([icalContent], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+        
+        // For Google Calendar, we'll download and show instructions
+        downloadICalFile(icalContent, `PrayerSync-${cityName.replace(/[^a-zA-Z0-9]/g, '')}-GoogleCalendar.ics`);
+        
+        // Show Google Calendar specific instructions
+        showGoogleCalendarInstructions();
+        
+    } catch (error) {
+        console.error('Google Calendar connection error:', error);
+        showToast('❌ Failed to generate Google Calendar. Please try download instead.', 'error');
+    }
+}
+
+async function connectOutlookCalendar() {
+    try {
+        const { lat, lon, cityName } = selectedLocation;
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1;
+        
+        showToast('🔄 Generating calendar for Outlook...', 'info');
+        
+        const response = await fetch(`https://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${lat}&longitude=${lon}&method=2`);
+        const data = await response.json();
+        
+        if (data.code !== 200 || !data.data) {
+            throw new Error('Failed to fetch prayer times');
+        }
+
+        const icalContent = generateSimpleICal(data.data, cityName, lat, lon);
+        downloadICalFile(icalContent, `PrayerSync-${cityName.replace(/[^a-zA-Z0-9]/g, '')}-Outlook.ics`);
+        
+        showOutlookInstructions();
+        
+    } catch (error) {
+        console.error('Outlook connection error:', error);
+        showToast('❌ Failed to generate Outlook calendar. Please try download instead.', 'error');
+    }
+}
+
+async function connectAppleCalendar() {
+    try {
+        const { lat, lon, cityName } = selectedLocation;
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1;
+        
+        showToast('🔄 Generating calendar for Apple Calendar...', 'info');
+        
+        const response = await fetch(`https://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${lat}&longitude=${lon}&method=2`);
+        const data = await response.json();
+        
+        if (data.code !== 200 || !data.data) {
+            throw new Error('Failed to fetch prayer times');
+        }
+
+        const icalContent = generateSimpleICal(data.data, cityName, lat, lon);
+        downloadICalFile(icalContent, `PrayerSync-${cityName.replace(/[^a-zA-Z0-9]/g, '')}-Apple.ics`);
+        
+        showAppleCalendarInstructions();
+        
+    } catch (error) {
+        console.error('Apple Calendar connection error:', error);
+        showToast('❌ Failed to generate Apple calendar. Please try download instead.', 'error');
+    }
+}
+
+// Calendar-specific instruction functions
+function showGoogleCalendarInstructions() {
+    const instructions = `
+📱 Google Calendar Setup:
+
+1. The calendar file has been downloaded
+2. Go to calendar.google.com
+3. Click the "+" next to "Other calendars"
+4. Select "Import"
+5. Click "Select file from your computer"
+6. Choose the downloaded file
+7. Select which calendar to add events to
+8. Click "Import"
+
+✅ Your prayer times will now appear in Google Calendar with 15-minute reminders!
+    `;
+    
+    setTimeout(() => {
+        if (confirm('📅 Google Calendar Instructions\n\n' + instructions + '\n\nClick OK to open Google Calendar now.')) {
+            window.open('https://calendar.google.com/calendar/u/0/r', '_blank');
+        }
+    }, 1000);
+}
+
+function showOutlookInstructions() {
+    const instructions = `
+💼 Outlook Calendar Setup:
+
+Desktop App:
+1. Open Outlook
+2. Go to File → Open & Export → Import/Export
+3. Select "Import an iCalendar (.ics) or vCalendar file"
+4. Browse and select the downloaded file
+5. Click "OK"
+
+Web Version:
+1. Go to outlook.live.com
+2. Click "Add calendar" in the sidebar
+3. Select "Upload from file"
+4. Choose the downloaded file
+5. Click "Import"
+
+✅ Your prayer times are now in Outlook!
+    `;
+    
+    setTimeout(() => {
+        if (confirm('💼 Outlook Instructions\n\n' + instructions + '\n\nClick OK to open Outlook Web now.')) {
+            window.open('https://outlook.live.com/calendar/', '_blank');
+        }
+    }, 1000);
+}
+
+function showAppleCalendarInstructions() {
+    const instructions = `
+🍎 Apple Calendar Setup:
+
+Mac:
+1. Double-click the downloaded .ics file
+2. Calendar app will open automatically
+3. Choose which calendar to import to
+4. Click "OK"
+
+iPhone/iPad:
+1. Email the file to yourself or save to Files app
+2. Tap the .ics file
+3. Select "Add to Calendar"
+4. Choose which calendar to use
+5. Tap "Add"
+
+✅ Prayer times added to Apple Calendar with notifications!
+    `;
+    
+    setTimeout(() => {
+        alert('🍎 Apple Calendar Instructions\n\n' + instructions);
+    }, 1000);
+}
+
+// Make functions globally available
 window.quickDownloadCalendar = quickDownloadCalendar;
+window.updateSelectedLocation = updateSelectedLocation;
+window.connectGoogleCalendar = connectGoogleCalendar;
+window.connectOutlookCalendar = connectOutlookCalendar;
+window.connectAppleCalendar = connectAppleCalendar;

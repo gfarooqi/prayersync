@@ -108,13 +108,13 @@ body.loading * {
 }
 
 /* Landing Page Styles - Islamic Geometric Pattern */
-.landing-page {
+#landing-page-wrapper {
     min-height: 100vh;
     position: relative;
     /* overflow: hidden; -- Removed to allow scrolling */
 }
 
-.landing-page::before {
+#landing-page-wrapper::before {
     content: '';
     position: absolute;
     top: 0;
@@ -130,7 +130,7 @@ body.loading * {
     z-index: 0;
 }
 
-.landing-page > * {
+#landing-page-wrapper > * {
     position: relative;
     z-index: 1;
 }
@@ -1452,6 +1452,40 @@ input:focus-visible,
 select:focus-visible {
     outline: 2px solid var(--secondary);
     outline-offset: 2px;
+}
+
+/* Calendar Connection Buttons */
+.calendar-connect-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    opacity: 0.9;
+}
+
+.calendar-connect-btn:active {
+    transform: translateY(0);
+}
+
+/* Location Select Styling */
+#citySelect:focus {
+    outline: none;
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+#citySelect option {
+    padding: 0.5rem;
+}
+
+/* Enhanced Button States */
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary:disabled:hover {
+    transform: none;
+    box-shadow: var(--shadow-md);
 }
 
 /* Utility classes */
