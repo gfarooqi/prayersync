@@ -186,8 +186,38 @@ async function quickDownloadCalendar() {
         // Download the file
         downloadICalFile(icalContent, `PrayerSync-${cityName.replace(/[^a-zA-Z0-9]/g, '')}-${currentYear}-${currentMonth}.ics`);
         
+        // Track download with analytics
+        if (window.analytics) {
+            window.analytics.trackDownload({
+                cityName: cityName,
+                timezone: selectedLocation.timezone,
+                latitude: lat,
+                longitude: lon,
+                calendarType: 'ics'
+            });
+        }
+        
         // Show success message
         showToast(`✅ Prayer calendar downloaded for ${cityName}!`, 'success');
+        
+        // Show email collection modal after successful download (value-first approach)
+        setTimeout(() => {
+            if (window.emailModal) {
+                window.emailModal.show({
+                    cityName: cityName,
+                    timezone: selectedLocation.timezone,
+                    downloadType: 'ics',
+                    country: getCountryFromCity(cityName)
+                }, (result) => {
+                    if (result.success) {
+                        console.log('📧 Email collected successfully:', result.email);
+                        showToast(`🎉 Thank you! Check your email to confirm your subscription.`, 'success');
+                    } else if (result.skipped) {
+                        console.log('📧 User skipped email collection');
+                    }
+                });
+            }
+        }, 1500); // Show modal 1.5 seconds after download success
         
     } catch (error) {
         console.error('Calendar generation error:', error);
@@ -514,9 +544,48 @@ iPhone/iPad:
     }, 1000);
 }
 
+// Helper function to extract country from city name
+function getCountryFromCity(cityName) {
+    const cityCountryMap = {
+        'New York, NY': 'US',
+        'Los Angeles, CA': 'US', 
+        'Chicago, IL': 'US',
+        'Houston, TX': 'US',
+        'Miami, FL': 'US',
+        'San Francisco, CA': 'US',
+        'Washington, DC': 'US',
+        'Toronto, ON': 'CA',
+        'Vancouver, BC': 'CA',
+        'Montreal, QC': 'CA',
+        'London, UK': 'GB',
+        'Manchester, UK': 'GB',
+        'Edinburgh, UK': 'GB',
+        'Berlin, Germany': 'DE',
+        'Munich, Germany': 'DE',
+        'Frankfurt, Germany': 'DE',
+        'Paris, France': 'FR',
+        'Marseille, France': 'FR',
+        'Mecca, Saudi Arabia': 'SA',
+        'Medina, Saudi Arabia': 'SA',
+        'Riyadh, Saudi Arabia': 'SA',
+        'Jeddah, Saudi Arabia': 'SA',
+        'Dubai, UAE': 'AE',
+        'Abu Dhabi, UAE': 'AE',
+        'Istanbul, Turkey': 'TR',
+        'Ankara, Turkey': 'TR',
+        'Kuala Lumpur, Malaysia': 'MY',
+        'Singapore': 'SG',
+        'Sydney, Australia': 'AU',
+        'Melbourne, Australia': 'AU'
+    };
+    
+    return cityCountryMap[cityName] || 'Unknown';
+}
+
 // Make functions globally available
 window.quickDownloadCalendar = quickDownloadCalendar;
 window.updateSelectedLocation = updateSelectedLocation;
 window.connectGoogleCalendar = connectGoogleCalendar;
 window.connectOutlookCalendar = connectOutlookCalendar;
 window.connectAppleCalendar = connectAppleCalendar;
+window.getCountryFromCity = getCountryFromCity;

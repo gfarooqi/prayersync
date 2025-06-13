@@ -9,7 +9,10 @@
       "mcp__puppeteer__puppeteer_evaluate",
       "mcp__puppeteer__puppeteer_screenshot",
       "mcp__zen_1__chat",
-      "WebFetch(domain:prayersync.vercel.app)"
+      "WebFetch(domain:prayersync.vercel.app)",
+      "mcp__puppeteer__puppeteer_navigate",
+      "Bash(grep:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }
