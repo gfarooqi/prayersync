@@ -1,7 +1,7 @@
-import { ical } from 'ical-generator';
-import { getVtimezoneComponent } from '@touch4it/ical-timezones';
+const { ical } = require('ical-generator');
+const { getVtimezoneComponent } = require('@touch4it/ical-timezones');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Only allow GET requests
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
