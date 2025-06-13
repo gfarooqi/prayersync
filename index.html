@@ -23,9 +23,11 @@
     <!-- Vercel Analytics -->
     <script defer src="https://va.vercel-scripts.com/v1/script.js" data-api="/_vercel/insights/view"></script>
 </head>
-<body class="landing-page">
-    <!-- Navigation -->
-    <nav class="navbar">
+<body>
+    <!-- Landing Page Wrapper -->
+    <div id="landing-page-wrapper" class="landing-page-alias">
+        <!-- Navigation -->
+        <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -33,7 +35,7 @@
                 </svg>
                 PrayerSync
             </div>
-            <button class="nav-btn" onclick="scrollToApp()">Try Free App</button>
+            <button class="nav-btn" id="nav-try-app">Try Free App</button>
         </div>
     </nav>
 
@@ -44,7 +46,7 @@
             <p class="hero-subtitle">Automatically sync prayer times with your business calendar. Smart conflict detection. Travel-friendly updates. Join 10,000+ Muslim professionals designing life around prayers.</p>
             
             <div class="hero-buttons">
-                <button class="btn-primary large" onclick="scrollToApp()">
+                <button class="btn-primary large" id="hero-try-app">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
                     </svg>
@@ -184,27 +186,29 @@
         <div class="container">
             <h2>Ready to Design Your Life Around Prayers?</h2>
             <p>Join 10,000+ Muslim professionals who never miss prayer. Free 30-day trial, no credit card required.</p>
-            <button class="btn-primary large" onclick="scrollToApp()">Start Free Trial Now</button>
+            <button class="btn-primary large" id="cta-try-app">Start Free Trial Now</button>
         </div>
     </section>
+    </div>
+    <!-- End Landing Page Wrapper -->
 
     <!-- App Interface Section -->
-    <div class="main-app" id="app" style="display: none;">
+    <div class="main-app" id="app" data-app-id="mainApp" style="display: none;">
         <header class="app-header">
             <div class="header-content">
                 <div class="header-left">
-                    <button class="back-btn" onclick="showLanding()">
+                    <button class="back-btn" id="back-to-landing">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                         </svg>
                     </button>
                     <h1>PrayerSync</h1>
                 </div>
-                <div class="location-badge" onclick="openLocationModal()">
+                <div class="location-badge" id="locationBadge">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                     </svg>
-                    <span id="currentLocation">Detecting location...</span>
+                    <span id="locationText">Detecting location...</span>
                     <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M7 10l5 5 5-5z"/>
                     </svg>
@@ -216,7 +220,7 @@
             <div class="app-container">
                 <!-- Date Section -->
                 <div class="date-section">
-                    <h2 id="currentDate">Loading...</h2>
+                    <h2 id="todayDate">Loading...</h2>
                     <p class="hijri-date" id="hijriDate">Loading Hijri date...</p>
                 </div>
 
@@ -296,7 +300,7 @@
                     <h3>Next Prayer</h3>
                     <div class="countdown-card">
                         <div class="countdown-prayer" id="nextPrayerName">Loading...</div>
-                        <div class="countdown-timer" id="countdown">--:--:--</div>
+                        <div class="countdown-timer" id="countdownTimer">--:--:--</div>
                         <div class="countdown-progress">
                             <div class="progress-bar" id="countdownProgress"></div>
                         </div>
@@ -308,22 +312,35 @@
                     <h3>Calendar Integration</h3>
                     <p class="sync-description">Export prayer times to your calendar app for seamless scheduling</p>
                     
+                    <!-- Quick Download Button -->
+                    <div style="margin-bottom: 2rem; text-align: center;">
+                        <button class="btn-primary large" id="quickDownload" onclick="quickDownloadCalendar()" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                            </svg>
+                            Download Prayer Calendar Now
+                        </button>
+                        <p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+                            ✨ One-click download • Works with all calendar apps • Free forever
+                        </p>
+                    </div>
+                    
                     <div class="sync-buttons">
-                        <button class="export-btn" onclick="exportToday()">
+                        <button class="export-btn" id="exportToday" onclick="exportToday()">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
                             </svg>
                             Today
                         </button>
                         
-                        <button class="export-btn" onclick="exportWeek()">
+                        <button class="export-btn" id="exportWeek" onclick="exportWeek()">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M9 11l3-3 3 3-1.41 1.41L12 10.83 10.41 12.41 9 11zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
                             </svg>
                             This Week
                         </button>
                         
-                        <button class="export-btn" onclick="exportMonth()">
+                        <button class="export-btn" id="exportMonth" onclick="exportMonth()">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
                             </svg>
@@ -363,7 +380,7 @@
                         </div>
                         <div class="setting-item">
                             <label for="eventDuration">Prayer Duration (minutes)</label>
-                            <select id="eventDuration" class="setting-select">
+                            <select id="reminderTime" class="setting-select">
                                 <option value="15">15 minutes</option>
                                 <option value="30" selected>30 minutes</option>
                                 <option value="45">45 minutes</option>
@@ -432,9 +449,6 @@
 
     <!-- Landing Page Navigation Script -->
     <script>
-        // Global app instance for lazy initialization
-        let salatAppInstance = null;
-        
         function scrollToApp() {
             // Analytics tracking - track app launch
             try {
@@ -456,38 +470,64 @@
             }
             
             // Hide the landing page and show the app container
-            document.querySelector('.landing-page').style.display = 'none';
+            document.getElementById('landing-page-wrapper').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             
             // Scroll to the top of the app section
             document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
             
-            // LAZY INITIALIZATION: Only create the app instance once
-            if (!salatAppInstance) {
-                salatAppInstance = new SalatApp();
+            // Initialize the app only when user navigates to it
+            if (!window.app) {
+                window.app = new PrayerSync();
             }
         }
 
         function showLanding() {
-            document.querySelector('.landing-page').style.display = 'block';
+            document.getElementById('landing-page-wrapper').style.display = 'block';
             document.getElementById('app').style.display = 'none';
         }
 
-        // Smooth scrolling for anchor links
+        // Enhanced navigation with proper event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Try App buttons - all entry points to the app
+            const tryAppButtons = [
+                document.getElementById('nav-try-app'),
+                document.getElementById('hero-try-app'),
+                document.getElementById('cta-try-app')
+            ];
+            
+            tryAppButtons.forEach(button => {
+                if (button) {
+                    button.addEventListener('click', scrollToApp);
+                }
+            });
+            
+            // Back to landing button
+            const backButton = document.getElementById('back-to-landing');
+            if (backButton) {
+                backButton.addEventListener('click', showLanding);
+            }
+            
+            // Location badge button
+            const locationBadge = document.getElementById('locationBadge');
+            if (locationBadge) {
+                locationBadge.addEventListener('click', openLocationModal);
+            }
+            
+            // Smooth scrolling for anchor links
             const links = document.querySelectorAll('a[href^="#"]');
             links.forEach(link => {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
                     
-                    // If it's scrollToApp, use the function instead
-                    if (href === '#app' || this.onclick) {
-                        return; // Let the onclick handler take over
+                    // Skip if it's an app navigation link
+                    if (href === '#app') {
+                        return;
                     }
                     
                     e.preventDefault();
                     const target = document.querySelector(href);
-                    if (target && document.querySelector('.landing-page').style.display !== 'none') {
+                    if (target && document.getElementById('landing-page-wrapper').style.display !== 'none') {
                         target.scrollIntoView({ 
                             behavior: 'smooth',
                             block: 'start'
@@ -499,6 +539,7 @@
     </script>
     
     <!-- JavaScript - Deferred for better performance -->
-    <script src="script.js" defer></script>
+    <script src="app.js" defer></script>
+    <script src="simple-calendar.js" defer></script>
 </body>
 </html>
