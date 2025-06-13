@@ -3,9 +3,23 @@
   "version": "1.0.0",
   "description": "PrayerSync - Never miss a prayer as a busy professional. Automatic calendar sync and smart conflict detection for Muslim professionals.",
   "main": "index.html",
+  "type": "module",
   "scripts": {
     "build": "echo 'Static site - no build required'",
-    "start": "echo 'Static site ready for deployment'"
+    "start": "echo 'Static site ready for deployment'",
+    "dev": "npx serve .",
+    "test-mcp": "npx @modelcontextprotocol/inspector@latest http://localhost:3000"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "@touch4it/ical-timezones": "^1.9.0",
+    "@types/qrcode.react": "^1.0.5",
+    "ical-generator": "^9.0.0",
+    "qrcode.react": "^4.2.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
   },
   "repository": {
     "type": "git",
@@ -13,7 +27,7 @@
   },
   "keywords": [
     "prayer-times",
-    "islamic-app", 
+    "islamic-app",
     "calendar-integration",
     "muslim-professionals",
     "pwa",
