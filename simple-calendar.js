@@ -95,10 +95,11 @@ function updateSelectedLocation() {
     
     try {
         const select = document.getElementById('citySelect');
-        const buttonText = document.getElementById('downloadButtonText');
+        const downloadButton = document.getElementById('quickDownload');
+        let buttonText = document.getElementById('downloadButtonText');
         
-        if (!select || !buttonText) {
-            console.error('Required elements not found');
+        if (!select) {
+            console.error('City select element not found');
             return;
         }
         
@@ -111,8 +112,18 @@ function updateSelectedLocation() {
                 timezone: timezone
             };
             
-            // Update button text
-            buttonText.textContent = `Download ${cityName} Prayer Calendar`;
+            // Update button text - handle case where span might not exist (e.g., during generation)
+            if (buttonText) {
+                buttonText.textContent = `Download ${cityName} Prayer Calendar`;
+            } else if (downloadButton && !downloadButton.disabled) {
+                // If the span doesn't exist but button isn't disabled, recreate the original structure
+                downloadButton.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    <span id="downloadButtonText">Download ${cityName} Prayer Calendar</span>
+                `;
+            }
             
             // Update current prayer times display if app is loaded
             if (window.app && typeof window.app.setLocation === 'function') {
