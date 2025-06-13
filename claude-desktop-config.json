@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "vercel": {
+      "command": "node",
+      "args": ["/Users/a16047/Desktop/claude-code-test/vercel-mcp.js"],
+      "env": {
+        "VERCEL_TOKEN": "uvVZS89f4kEJ9JAcYKFgvGXV"
+      }
+    }
+  }
+}

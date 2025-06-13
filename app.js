@@ -178,8 +178,7 @@ class PrayerSync {
             const method = methodMap[this.settings.calculationMethod] || 3;
             
             const response = await fetch(
-                `https://api.aladhan.com/v1/timings/${dateString}?latitude=${this.location.latitude}&longitude=${this.location.longitude}&method=${method}`,
-                { timeout: 10000 }
+                `https://api.aladhan.com/v1/timings/${dateString}?latitude=${this.location.latitude}&longitude=${this.location.longitude}&method=${method}`
             );
             
             if (!response.ok) {
@@ -582,15 +581,15 @@ The prayer times will appear as calendar events with 15-minute reminders.
 
     // Navigation functions (keep existing)
     showApp() {
-        const landingPage = document.getElementById('landingPage');
-        const mainApp = document.getElementById('mainApp');
+        const landingPage = document.getElementById('landing-page-wrapper');
+        const mainApp = document.getElementById('app');
         if (landingPage) landingPage.style.display = 'none';
         if (mainApp) mainApp.style.display = 'block';
     }
 
     showLanding() {
-        const landingPage = document.getElementById('landingPage');
-        const mainApp = document.getElementById('mainApp');
+        const landingPage = document.getElementById('landing-page-wrapper');
+        const mainApp = document.getElementById('app');
         if (landingPage) landingPage.style.display = 'block';
         if (mainApp) mainApp.style.display = 'none';
     }
@@ -857,33 +856,84 @@ The prayer times will appear as calendar events with 15-minute reminders.
 // [Include all the sharing and modal functions from the original file]
 
 // Initialize app
-let app;
-document.addEventListener('DOMContentLoaded', () => {
-    app = new PrayerSync();
-});
+// App will be initialized when user navigates to app interface
 
 // Keep all existing global functions for onclick handlers
 function showApp() {
-    if (app) app.showApp();
+    if (window.app) window.app.showApp();
 }
 
 function showLanding() {
-    if (app) app.showLanding();
+    if (window.app) window.app.showLanding();
 }
 
 function scrollToFeatures() {
-    if (app) app.scrollToFeatures();
+    if (window.app) window.app.scrollToFeatures();
 }
 
 // Export calendar functions
 function exportToday() {
-    if (app) app.exportCalendar('today');
+    if (window.app) window.app.exportCalendar('today');
 }
 
 function exportWeek() {
-    if (app) app.exportCalendar('week');
+    if (window.app) window.app.exportCalendar('week');
 }
 
 function exportMonth() {
-    if (app) app.exportCalendar('month');
+    if (window.app) window.app.exportCalendar('month');
+}
+
+// Location modal functions
+function openLocationModal() {
+    const modal = document.getElementById('locationModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeLocationModal() {
+    const modal = document.getElementById('locationModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function useCurrentLocation() {
+    if (window.app) {
+        window.app.getLocation().catch(error => {
+            console.error("Error getting current location:", error);
+            // Show user-friendly error
+            const locationText = document.getElementById('locationText');
+            if (locationText) {
+                locationText.textContent = 'Location access denied';
+            }
+        });
+        closeLocationModal();
+    }
+}
+
+function selectCity(name, country, lat, lng, timezone) {
+    console.log('selectCity called with:', name, country, lat, lng, timezone);
+    if (window.app) {
+        console.log('window.app exists, calling setLocation');
+        window.app.setLocation({
+            latitude: lat,
+            longitude: lng,
+            name: `${name}, ${country}`,
+            timezone: timezone
+        }).then(() => {
+            console.log('setLocation completed successfully');
+        }).catch(error => {
+            console.error("Error setting location:", error);
+            // Show user-friendly error
+            const locationText = document.getElementById('locationText');
+            if (locationText) {
+                locationText.textContent = 'Location error - try again';
+            }
+        });
+        closeLocationModal();
+    } else {
+        console.error('window.app does not exist');
+    }
 }

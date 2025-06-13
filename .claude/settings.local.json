@@ -1,8 +1,16 @@
 {
   "permissions": {
-    "allow": [],
-    "deny": [
-      "DataforSEO"
-    ]
+    "allow": [
+      "DataforSEO",
+      "mcp__vercel_1__deploy_project",
+      "mcp__zen_1__thinkdeep",
+      "mcp__zen_1__debug",
+      "mcp__puppeteer__puppeteer_click",
+      "mcp__puppeteer__puppeteer_evaluate",
+      "mcp__puppeteer__puppeteer_screenshot",
+      "mcp__zen_1__chat",
+      "WebFetch(domain:prayersync.vercel.app)"
+    ],
+    "deny": []
   }
 }

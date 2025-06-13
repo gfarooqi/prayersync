@@ -6,6 +6,79 @@ let selectedLocation = {
     timezone: "America/New_York"
 };
 
+/**
+ * Calculates the UTC offset in minutes for a given date and IANA timezone.
+ * This is the core of our native timezone solution.
+ * @param {string} dateString - The date in 'YYYY-MM-DD' format.
+ * @param {string} timezone - The IANA timezone name, e.g., 'America/New_York'.
+ * @returns {number} The UTC offset in minutes (e.g., -240 for EDT, 600 for AEST).
+ */
+function getUtcOffsetInMinutes(dateString, timezone) {
+    // Create a reference date at noon UTC. Noon is a safe time that avoids most
+    // DST transitions, which typically happen around midnight or early morning.
+    const refUtcDate = new Date(`${dateString}T12:00:00Z`);
+
+    // Use Intl.DateTimeFormat to determine the local time parts in the target timezone.
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false, // Use 24-hour clock for easier math
+    });
+
+    const parts = formatter.formatToParts(refUtcDate);
+    const findPart = (type) => parseInt(parts.find(p => p.type === type)?.value || '0');
+
+    // Reconstruct the local time using its parts, but create it as a UTC date.
+    // This gives us a timestamp that we can directly compare with our reference UTC date.
+    const localTimeAsUtc = Date.UTC(
+        findPart('year'),
+        findPart('month') - 1, // Date.UTC months are 0-indexed
+        findPart('day'),
+        findPart('hour'),
+        findPart('minute'),
+        findPart('second')
+    );
+
+    // The offset is the difference between the reference UTC time and the local time.
+    // (e.g., 12:00Z - 08:00Z = 4 hours for New York)
+    const offsetInMs = refUtcDate.getTime() - localTimeAsUtc;
+    return offsetInMs / (1000 * 60);
+}
+
+/**
+ * Converts a prayer time from its local timezone to a UTC string for the .ics file.
+ * @param {string} apiDate - The date from the API, format 'DD-MM-YYYY'.
+ * @param {string} prayerTime - The time from the API, format 'HH:mm'.
+ * @param {string} timezone - The IANA timezone name from the API.
+ * @returns {string} A UTC datetime string formatted for iCal, e.g., '20241015T230500Z'.
+ */
+function getIcsUtcString(apiDate, prayerTime, timezone) {
+    // 1. Reformat API date from DD-MM-YYYY to YYYY-MM-DD for consistency.
+    const [day, month, year] = apiDate.split('-');
+    const isoDate = `${year}-${month}-${day}`;
+
+    // 2. Calculate the specific offset for this day and timezone.
+    const offsetInMinutes = getUtcOffsetInMinutes(isoDate, timezone);
+
+    // 3. Parse prayer time and create a UTC timestamp as if it were local time.
+    const [hours, minutes] = prayerTime.split(':').map(Number);
+    const localTimeAsUtcMs = Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day), hours, minutes);
+
+    // 4. Calculate the correct UTC time by applying the offset.
+    // The formula is: CorrectUTC = LocalTime - Offset
+    // Example (New York, UTC-4): 19:05 - (-240 mins) = 19:05 + 4 hours = 23:05 UTC.
+    const correctUtcMs = localTimeAsUtcMs - (offsetInMinutes * 60 * 1000);
+    const correctUtcDate = new Date(correctUtcMs);
+
+    // 5. Format the final date into the required iCal format (YYYYMMDDTHHmmssZ).
+    return correctUtcDate.toISOString().replace(/[-:.]/g, '').substring(0, 15) + 'Z';
+}
+
 // Handle location selection from dropdown
 function updateSelectedLocation() {
     const select = document.getElementById('citySelect');
@@ -57,8 +130,9 @@ async function quickDownloadCalendar() {
         
         const response = await fetch(`https://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${lat}&longitude=${lon}&method=2`);
         
+        // Improved error handling
         if (!response.ok) {
-            throw new Error('Failed to fetch prayer times');
+            throw new Error(`API request failed: ${response.status} ${response.statusText}`);
         }
         
         const data = await response.json();
@@ -67,7 +141,7 @@ async function quickDownloadCalendar() {
             throw new Error('Invalid response from prayer times API');
         }
 
-        // Generate simple iCal content
+        // Generate timezone-corrected iCal content
         const icalContent = generateSimpleICal(data.data, cityName, lat, lon);
         
         // Download the file
@@ -78,9 +152,19 @@ async function quickDownloadCalendar() {
         
     } catch (error) {
         console.error('Calendar generation error:', error);
-        showToast('❌ Failed to generate calendar. Please try again.', 'error');
+        let errorMessage = '❌ Failed to generate calendar. ';
+        
+        if (error.message.includes('API request failed')) {
+            errorMessage += 'Server temporarily unavailable. Please try again later.';
+        } else if (error.message.includes('Invalid response')) {
+            errorMessage += 'Invalid location data. Please select a different city.';
+        } else {
+            errorMessage += 'Please check your internet connection and try again.';
+        }
+        
+        showToast(errorMessage, 'error');
     } finally {
-        // Reset button
+        // Reset button state
         const button = document.getElementById('quickDownload') || event.target;
         button.innerHTML = originalText;
         button.disabled = false;
@@ -93,21 +177,21 @@ function generateSimpleICal(monthData, cityName, lat, lon) {
     
     let icalContent = `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//PrayerSync//Prayer Times Calendar//EN
+PRODID:-//PrayerSync//PrayerSync Calendar v1.0//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:Prayer Times - ${cityName}
 X-WR-CALDESC:Islamic prayer times for ${cityName}
-X-WR-TIMEZONE:${Intl.DateTimeFormat().resolvedOptions().timeZone}
+X-WR-TIMEZONE:UTC
 `;
 
     const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
     
     monthData.forEach(dayData => {
-        if (!dayData.timings || !dayData.date) return;
+        if (!dayData.timings || !dayData.date || !dayData.meta) return;
         
-        const [day, month, year] = dayData.date.gregorian.date.split('-');
-        const baseDate = new Date(year, month - 1, day);
+        const gregorianDate = dayData.date.gregorian.date; // DD-MM-YYYY format
+        const timezone = dayData.meta.timezone || selectedLocation.timezone;
         
         prayers.forEach(prayer => {
             const prayerTime = dayData.timings[prayer];
@@ -117,30 +201,26 @@ X-WR-TIMEZONE:${Intl.DateTimeFormat().resolvedOptions().timeZone}
             const timeMatch = prayerTime.match(/^(\d{1,2}):(\d{2})/);
             if (!timeMatch) return;
             
-            const hours = parseInt(timeMatch[1]);
-            const minutes = parseInt(timeMatch[2]);
+            const cleanTime = `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`;
             
-            const startDate = new Date(baseDate);
-            startDate.setHours(hours, minutes, 0, 0);
-            
-            const endDate = new Date(startDate);
-            endDate.setMinutes(endDate.getMinutes() + 30);
-            
-            // Format dates for iCal (YYYYMMDDTHHMMSS)
-            const formatDate = (date) => {
-                return date.getFullYear() +
-                       (date.getMonth() + 1).toString().padStart(2, '0') +
-                       date.getDate().toString().padStart(2, '0') + 'T' +
-                       date.getHours().toString().padStart(2, '0') +
-                       date.getMinutes().toString().padStart(2, '0') +
-                       date.getSeconds().toString().padStart(2, '0');
-            };
-            
-            icalContent += `BEGIN:VEVENT
-UID:prayersync-${prayer.toLowerCase()}-${formatDate(startDate)}@prayersync.com
-DTSTAMP:${formatDate(new Date())}
-DTSTART:${formatDate(startDate)}
-DTEND:${formatDate(endDate)}
+            try {
+                // Use our new timezone-aware conversion
+                const dtStart = getIcsUtcString(gregorianDate, cleanTime, timezone);
+                const dtEnd = dtStart; // For prayer times, we use the same start and end
+                
+                // Create unique UID for each prayer event
+                const dateStr = gregorianDate.replace(/-/g, '');
+                const uid = `${prayer.toLowerCase()}-${dateStr}@prayersync.app`;
+                
+                // Generate current timestamp in UTC for DTSTAMP
+                const now = new Date();
+                const dtStamp = now.toISOString().replace(/[-:.]/g, '').substring(0, 15) + 'Z';
+                
+                icalContent += `BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${dtStamp}
+DTSTART:${dtStart}
+DTEND:${dtEnd}
 SUMMARY:${prayer} Prayer
 DESCRIPTION:Time for ${prayer} prayer. May Allah accept your worship.
 LOCATION:${cityName}
@@ -152,6 +232,10 @@ DESCRIPTION:${prayer} prayer in 15 minutes
 END:VALARM
 END:VEVENT
 `;
+            } catch (error) {
+                console.error(`Failed to process ${prayer} time for ${gregorianDate}:`, error);
+                // Continue with other prayers even if one fails
+            }
         });
     });
     
@@ -227,19 +311,20 @@ async function connectGoogleCalendar() {
         showToast('🔄 Generating calendar for Google Calendar...', 'info');
         
         const response = await fetch(`https://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${lat}&longitude=${lon}&method=2`);
+        
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+        }
+        
         const data = await response.json();
         
         if (data.code !== 200 || !data.data) {
-            throw new Error('Failed to fetch prayer times');
+            throw new Error('Invalid response from prayer times API');
         }
 
         const icalContent = generateSimpleICal(data.data, cityName, lat, lon);
         
-        // Create a webcal:// URL for direct Google Calendar import
-        const blob = new Blob([icalContent], { type: 'text/calendar' });
-        const url = URL.createObjectURL(blob);
-        
-        // For Google Calendar, we'll download and show instructions
+        // For Google Calendar, download and show instructions
         downloadICalFile(icalContent, `PrayerSync-${cityName.replace(/[^a-zA-Z0-9]/g, '')}-GoogleCalendar.ics`);
         
         // Show Google Calendar specific instructions
@@ -260,10 +345,15 @@ async function connectOutlookCalendar() {
         showToast('🔄 Generating calendar for Outlook...', 'info');
         
         const response = await fetch(`https://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${lat}&longitude=${lon}&method=2`);
+        
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+        }
+        
         const data = await response.json();
         
         if (data.code !== 200 || !data.data) {
-            throw new Error('Failed to fetch prayer times');
+            throw new Error('Invalid response from prayer times API');
         }
 
         const icalContent = generateSimpleICal(data.data, cityName, lat, lon);
@@ -286,10 +376,15 @@ async function connectAppleCalendar() {
         showToast('🔄 Generating calendar for Apple Calendar...', 'info');
         
         const response = await fetch(`https://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${lat}&longitude=${lon}&method=2`);
+        
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+        }
+        
         const data = await response.json();
         
         if (data.code !== 200 || !data.data) {
-            throw new Error('Failed to fetch prayer times');
+            throw new Error('Invalid response from prayer times API');
         }
 
         const icalContent = generateSimpleICal(data.data, cityName, lat, lon);

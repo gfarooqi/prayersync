@@ -35,3 +35,4 @@ dataforseo-cache/
 
 # Lighthouse reports
 lighthouse-report.*
+.vercel
