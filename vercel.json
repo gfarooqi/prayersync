@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "name": "prayersync",
+  "buildCommand": "echo 'Static site - no build needed'",
+  "outputDirectory": ".",
   "public": true,
-  "github": {
-    "enabled": true,
-    "autoAlias": true
-  },
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
@@ -28,15 +25,6 @@
         {
           "key": "Content-Type",
           "value": "application/manifest+json"
-        }
-      ]
-    },
-    {
-      "source": "/pages/(.*).html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400"
         }
       ]
     },

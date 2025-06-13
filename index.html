@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PrayerSync - Never Miss a Prayer as a Busy Professional | Prayer Times Calendar Integration</title>
     <meta name="description" content="Automatically sync prayer times with your business calendar. Smart conflict detection. Join 10,000+ Muslim professionals who never miss prayer. Free trial.">
-    <link rel="stylesheet" href="styles-production.css">
+    <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e3a5f">
+    <meta name="theme-color" content="#006A4E">
     
     <!-- SEO Meta Tags -->
     <meta property="og:title" content="PrayerSync - Prayer Times Calendar Integration for Muslim Professionals">
@@ -19,6 +19,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Vercel Analytics -->
+    <script defer src="https://va.vercel-scripts.com/v1/script.js" data-api="/_vercel/insights/view"></script>
 </head>
 <body class="landing-page">
     <!-- Navigation -->
@@ -72,19 +75,36 @@
         </div>
 
         <div class="hero-image">
-            <div class="phone-mockup">
-                <div class="phone-screen">
-                    <div class="mini-prayer-card active">
-                        <div class="mini-prayer-name">Dhuhr</div>
-                        <div class="mini-prayer-time">12:45 PM</div>
+            <div class="professional-context">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="app-header-mini">
+                            <div class="app-title">PrayerSync</div>
+                            <div class="location-mini">New York, NY</div>
+                        </div>
+                        <div class="mini-prayer-card active">
+                            <div class="mini-prayer-name">Dhuhr</div>
+                            <div class="mini-prayer-time">12:45 PM</div>
+                            <div class="mini-prayer-status">Now</div>
+                        </div>
+                        <div class="mini-prayer-card">
+                            <div class="mini-prayer-name">Asr</div>
+                            <div class="mini-prayer-time">4:15 PM</div>
+                            <div class="mini-prayer-status">In 3h 30m</div>
+                        </div>
+                        <div class="mini-prayer-card">
+                            <div class="mini-prayer-name">Maghrib</div>
+                            <div class="mini-prayer-time">6:30 PM</div>
+                            <div class="mini-prayer-status">In 5h 45m</div>
+                        </div>
                     </div>
-                    <div class="mini-prayer-card">
-                        <div class="mini-prayer-name">Asr</div>
-                        <div class="mini-prayer-time">4:15 PM</div>
-                    </div>
-                    <div class="mini-prayer-card">
-                        <div class="mini-prayer-name">Maghrib</div>
-                        <div class="mini-prayer-time">6:30 PM</div>
+                </div>
+                <div class="desk-elements">
+                    <div class="calendar-glimpse">
+                        <div class="calendar-header">Today's Schedule</div>
+                        <div class="calendar-item blocked">12:45 PM - Personal Time</div>
+                        <div class="calendar-item">2:00 PM - Client Meeting</div>
+                        <div class="calendar-item blocked">4:15 PM - Personal Time</div>
                     </div>
                 </div>
             </div>
@@ -335,6 +355,21 @@
                                 <option value="Karachi">University of Islamic Sciences, Karachi</option>
                             </select>
                         </div>
+                        <div class="setting-item">
+                            <label for="professionalMode">
+                                <input type="checkbox" id="professionalMode" checked> 
+                                Professional Mode (shows "Personal Time" instead of prayer names)
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="eventDuration">Prayer Duration (minutes)</label>
+                            <select id="eventDuration" class="setting-select">
+                                <option value="15">15 minutes</option>
+                                <option value="30" selected>30 minutes</option>
+                                <option value="45">45 minutes</option>
+                                <option value="60">60 minutes</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -395,17 +430,41 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
-    <script src="app-production.js"></script>
-    
     <!-- Landing Page Navigation Script -->
     <script>
+        // Global app instance for lazy initialization
+        let salatAppInstance = null;
+        
         function scrollToApp() {
+            // Analytics tracking - track app launch
+            try {
+                // Vercel Analytics
+                if (window.va) {
+                    window.va('track', 'App Launch', { location: 'Try Free App Button' });
+                }
+                // Google Analytics (if present)
+                if (typeof gtag === 'function') {
+                    gtag('event', 'launch_app', {
+                        'event_category': 'engagement',
+                        'event_label': 'Try Free App Button'
+                    });
+                }
+                // Simple fallback tracking
+                console.log('Analytics: User launched app');
+            } catch (e) {
+                console.log('Analytics tracking failed:', e);
+            }
+            
+            // Hide the landing page and show the app container
             document.querySelector('.landing-page').style.display = 'none';
             document.getElementById('app').style.display = 'block';
-            // Initialize app if needed
-            if (typeof initializeApp === 'function') {
-                initializeApp();
+            
+            // Scroll to the top of the app section
+            document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
+            
+            // LAZY INITIALIZATION: Only create the app instance once
+            if (!salatAppInstance) {
+                salatAppInstance = new SalatApp();
             }
         }
 
@@ -419,14 +478,27 @@
             const links = document.querySelectorAll('a[href^="#"]');
             links.forEach(link => {
                 link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    
+                    // If it's scrollToApp, use the function instead
+                    if (href === '#app' || this.onclick) {
+                        return; // Let the onclick handler take over
+                    }
+                    
                     e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth' });
+                    const target = document.querySelector(href);
+                    if (target && document.querySelector('.landing-page').style.display !== 'none') {
+                        target.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
                     }
                 });
             });
         });
     </script>
+    
+    <!-- JavaScript - Deferred for better performance -->
+    <script src="script.js" defer></script>
 </body>
 </html>

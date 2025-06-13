@@ -153,6 +153,8 @@ class CalendarIntegration {
         this.eventDuration = 30;
         this.eventReminder = 10;
         this.includeLocation = true;
+        this.professionalMode = true; // Default to professional/discrete mode
+        this.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
 
     // Generate iCal format for prayer events
@@ -166,18 +168,34 @@ class CalendarIntegration {
         const endDate = new Date(startDate);
         endDate.setMinutes(endDate.getMinutes() + this.eventDuration);
         
-        const formatDate = (d) => {
-            return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+        // Improved timezone-aware date formatting
+        const formatDateWithTZ = (d) => {
+            // Use local time format for better compatibility
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const hour = String(d.getHours()).padStart(2, '0');
+            const minute = String(d.getMinutes()).padStart(2, '0');
+            const second = String(d.getSeconds()).padStart(2, '0');
+            return `${year}${month}${day}T${hour}${minute}${second}`;
         };
+        
+        // Professional vs personal mode
+        const eventTitle = this.professionalMode ? 'Personal Time' : `${prayerName} Prayer`;
+        const eventDescription = this.professionalMode 
+            ? `Personal time block (${prayerName} prayer)`
+            : `Time for ${prayerName} prayer`;
         
         let icalEvent = [
             'BEGIN:VEVENT',
-            `UID:${prayer}-${formatDate(startDate)}@salatplanner`,
-            `DTSTAMP:${formatDate(new Date())}`,
-            `DTSTART:${formatDate(startDate)}`,
-            `DTEND:${formatDate(endDate)}`,
-            `SUMMARY:${prayerName} Prayer`,
-            `DESCRIPTION:Time for ${prayerName} prayer`
+            `UID:prayersync-${prayer}-${formatDateWithTZ(startDate)}@prayersync.com`,
+            `DTSTAMP:${formatDateWithTZ(new Date())}`,
+            `DTSTART;TZID=${this.timezone}:${formatDateWithTZ(startDate)}`,
+            `DTEND;TZID=${this.timezone}:${formatDateWithTZ(endDate)}`,
+            `SUMMARY:${eventTitle}`,
+            `DESCRIPTION:${eventDescription}`,
+            'STATUS:CONFIRMED',
+            'TRANSP:BUSY'
         ];
         
         if (this.includeLocation && location) {
@@ -185,11 +203,15 @@ class CalendarIntegration {
         }
         
         if (this.eventReminder > 0) {
+            const reminderDesc = this.professionalMode 
+                ? `Personal time in ${this.eventReminder} minutes`
+                : `${prayerName} prayer in ${this.eventReminder} minutes`;
+            
             icalEvent.push(
                 'BEGIN:VALARM',
                 'TRIGGER:-PT' + this.eventReminder + 'M',
                 'ACTION:DISPLAY',
-                `DESCRIPTION:${prayerName} prayer in ${this.eventReminder} minutes`,
+                `DESCRIPTION:${reminderDesc}`,
                 'END:VALARM'
             );
         }
@@ -204,11 +226,12 @@ class CalendarIntegration {
         const icalHeader = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//Salat Planner//Prayer Times//EN',
+            'PRODID:-//PrayerSync//Prayer Times Calendar//EN',
             'CALSCALE:GREGORIAN',
             'METHOD:PUBLISH',
-            'X-WR-CALNAME:Prayer Times',
-            'X-WR-TIMEZONE:' + Intl.DateTimeFormat().resolvedOptions().timeZone
+            'X-WR-CALNAME:Prayer Times - PrayerSync',
+            'X-WR-TIMEZONE:' + this.timezone,
+            'X-WR-CALDESC:Prayer times synchronized with your professional calendar'
         ].join('\r\n');
         
         const icalFooter = 'END:VCALENDAR';
@@ -323,10 +346,12 @@ class SalatApp {
         // Calendar settings
         document.getElementById('eventDuration').addEventListener('change', (e) => {
             this.calendarIntegration.eventDuration = parseInt(e.target.value);
+            this.saveSettings();
         });
 
-        document.getElementById('eventReminder').addEventListener('change', (e) => {
-            this.calendarIntegration.eventReminder = parseInt(e.target.value);
+        document.getElementById('professionalMode').addEventListener('change', (e) => {
+            this.calendarIntegration.professionalMode = e.target.checked;
+            this.saveSettings();
         });
 
         document.getElementById('includeLocation').addEventListener('change', (e) => {
@@ -539,24 +564,45 @@ class SalatApp {
         
         if (settings.notificationTime !== undefined) {
             this.notificationTime = settings.notificationTime;
-            document.getElementById('notificationTime').value = settings.notificationTime;
+            if (document.getElementById('notificationTime')) {
+                document.getElementById('notificationTime').value = settings.notificationTime;
+            }
+        }
+        
+        if (settings.professionalMode !== undefined) {
+            this.calendarIntegration.professionalMode = settings.professionalMode;
+            document.getElementById('professionalMode').checked = settings.professionalMode;
+        }
+        
+        if (settings.eventDuration !== undefined) {
+            this.calendarIntegration.eventDuration = settings.eventDuration;
+            document.getElementById('eventDuration').value = settings.eventDuration;
         }
     }
 
     saveSettings() {
         const calculationMethod = document.getElementById('calcMethod').value;
-        const notificationTime = parseInt(document.getElementById('notificationTime').value);
+        const professionalMode = document.getElementById('professionalMode').checked;
+        const eventDuration = parseInt(document.getElementById('eventDuration').value);
+        const notificationTime = document.getElementById('notificationTime') ? 
+            parseInt(document.getElementById('notificationTime').value) : this.notificationTime;
         
         this.calculator.calculationMethod = calculationMethod;
+        this.calendarIntegration.professionalMode = professionalMode;
+        this.calendarIntegration.eventDuration = eventDuration;
         this.notificationTime = notificationTime;
         
         localStorage.setItem('salatSettings', JSON.stringify({
             calculationMethod,
+            professionalMode,
+            eventDuration,
             notificationTime
         }));
         
         this.updatePrayerTimes();
-        document.getElementById('settingsModal').style.display = 'none';
+        if (document.getElementById('settingsModal')) {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
     }
 
     updateDate() {
@@ -669,10 +715,8 @@ class SalatApp {
     }
 }
 
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new SalatApp();
-});
+// App initialization moved to lazy loading in scrollToApp() function
+// This improves landing page performance and prevents unnecessary calculations
 
 // Register service worker for offline functionality
 if ('serviceWorker' in navigator) {
