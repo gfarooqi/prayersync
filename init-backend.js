@@ -72,21 +72,26 @@ function initializeOfflineMode() {
     };
 }
 
-// Initialize Supabase in production
+// Initialize services in production
 async function initializeSupabase() {
     try {
-        // Set Supabase configuration
-        window.SUPABASE_URL = 'https://pvpwfothhggjxbdcvwzu.supabase.co';
-        window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cHdmb3RoaGdnanhiZGN2d3p1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MDE3MDEsImV4cCI6MjA2NTM3NzcwMX0.uuDgD-bsNWlMXkZDQDLy_IUXxQi45dW7O_zYZRMQMl0';
+        // Load configuration from secure API endpoint
+        const configResponse = await fetch('/api/config');
+        const config = await configResponse.json();
+        
+        // Set configuration globally
+        window.APP_CONFIG = config;
+        window.SUPABASE_URL = config.supabaseUrl;
+        window.SUPABASE_ANON_KEY = config.supabaseAnonKey;
 
         // Load the Supabase library and create instances
         const module = await import('./lib/supabase.js');
         window.analytics = new module.PrayerSyncAnalytics();
         window.emailManager = new module.EmailManager();
 
-        console.log('🗄️ Supabase initialized');
+        console.log('🗄️ Services initialized with secure configuration');
     } catch (error) {
-        console.warn('⚠️ Supabase initialization failed, falling back to offline mode:', error);
+        console.warn('⚠️ Service initialization failed, falling back to offline mode:', error);
         initializeOfflineMode();
     }
 }

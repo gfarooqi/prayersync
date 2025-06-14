@@ -36,3 +36,6 @@ dataforseo-cache/
 # Lighthouse reports
 lighthouse-report.*
 .vercel
+
+# Calendar integration credentials
+calendar-integration/config.js

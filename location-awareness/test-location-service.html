@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocationService Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f9f9f9;
+        }
+        .log-output {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #006A4E;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a42;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .status.success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .status.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .status.info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>LocationService Test</h1>
+    <p>This page tests the LocationService with mock coordinates and Page Visibility API triggers.</p>
+
+    <div class="test-section">
+        <h3>Current Status</h3>
+        <div id="status" class="status info">LocationService not initialized</div>
+        <div id="locationInfo">
+            <strong>Current Location:</strong> <span id="currentLocation">None</span><br>
+            <strong>Session Start:</strong> <span id="sessionLocation">None</span><br>
+            <strong>Pending Prompt:</strong> <span id="pendingPrompt">No</span>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Actions</h3>
+        <button onclick="initializeService()">Initialize LocationService</button>
+        <button onclick="simulateTravel()">Simulate Travel (>50km)</button>
+        <button onclick="simulateLocalMove()">Simulate Local Move (<50km)</button>
+        <button onclick="triggerVisibilityCheck()">Trigger Visibility Check</button>
+        <button onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Event Log</h3>
+        <div id="logOutput" class="log-output">Ready for testing...</div>
+    </div>
+
+    <script type="module">
+        import { LocationService } from './LocationService.js';
+        import { MockProvider } from './geocoding/MockProvider.js';
+
+        let locationService;
+        const logOutput = document.getElementById('logOutput');
+        
+        // Test coordinates
+        const testLocations = {
+            newYork: { latitude: 40.7128, longitude: -74.0060, city: 'New York, NY' },
+            london: { latitude: 51.5074, longitude: -0.1278, city: 'London, UK' },
+            dubai: { latitude: 25.2048, longitude: 55.2708, city: 'Dubai, UAE' },
+            losAngeles: { latitude: 34.0522, longitude: -118.2437, city: 'Los Angeles, CA' }
+        };
+
+        // Enhanced mock provider for testing
+        class TestMockProvider extends MockProvider {
+            constructor() {
+                super();
+                // Add our test locations
+                this.mockLocations = {
+                    ...this.mockLocations,
+                    '40.7128,-74.0060': 'New York, NY',
+                    '51.5074,-0.1278': 'London, UK', 
+                    '25.2048,55.2708': 'Dubai, UAE',
+                    '34.0522,-118.2437': 'Los Angeles, CA'
+                };
+            }
+        }
+
+        // Initialize logging
+        function log(message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logLine = `[${timestamp}] ${message}`;
+            logOutput.textContent += logLine + '\n';
+            if (data) {
+                logOutput.textContent += JSON.stringify(data, null, 2) + '\n';
+            }
+            logOutput.textContent += '\n';
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+
+        // Mock geolocation for testing
+        let mockPosition = testLocations.newYork;
+        
+        // Override navigator.geolocation for testing
+        const originalGeolocation = navigator.geolocation;
+        navigator.geolocation = {
+            getCurrentPosition: (success, error) => {
+                setTimeout(() => {
+                    success({
+                        coords: {
+                            latitude: mockPosition.latitude,
+                            longitude: mockPosition.longitude,
+                            accuracy: 10
+                        },
+                        timestamp: Date.now()
+                    });
+                }, 500); // Simulate network delay
+            }
+        };
+
+        // Set up event listeners for LocationService events
+        document.addEventListener('location-service-initialized', (e) => {
+            log('🎯 LocationService initialized', e.detail);
+            updateStatus('success', 'LocationService initialized successfully');
+            updateLocationDisplay();
+        });
+
+        document.addEventListener('significant-location-change', (e) => {
+            log('📍 Significant location change detected!', e.detail);
+            updateStatus('info', `Travel detected: ${e.detail.distance.toFixed(1)}km to ${e.detail.newLocation.city}`);
+            updateLocationDisplay();
+            
+            // Show mock user prompt
+            setTimeout(() => {
+                const accept = confirm(`You're now in ${e.detail.newLocation.city}. Update prayer times?`);
+                if (accept) {
+                    locationService.acceptLocationChange(e.detail.newLocation);
+                } else {
+                    locationService.dismissLocationChange();
+                }
+            }, 1000);
+        });
+
+        document.addEventListener('location-change-accepted', (e) => {
+            log('✅ Location change accepted', e.detail);
+            updateStatus('success', `Location updated to ${e.detail.newLocation.city}`);
+            updateLocationDisplay();
+        });
+
+        document.addEventListener('location-change-dismissed', (e) => {
+            log('❌ Location change dismissed', e.detail);
+            updateStatus('info', 'Location change dismissed by user');
+            updateLocationDisplay();
+        });
+
+        document.addEventListener('location-check-completed', (e) => {
+            log('🔄 Location check completed', e.detail);
+            if (!e.detail.significant) {
+                updateStatus('info', `Location checked: ${e.detail.distance.toFixed(1)}km change (not significant)`);
+            }
+        });
+
+        document.addEventListener('location-check-failed', (e) => {
+            log('❌ Location check failed', e.detail);
+            updateStatus('error', `Location check failed: ${e.detail.error}`);
+        });
+
+        // Test functions
+        window.initializeService = async function() {
+            try {
+                locationService = new LocationService({
+                    geocodingProvider: new TestMockProvider(),
+                    significantChangeThreshold: 50, // 50km threshold
+                    enableLogging: true
+                });
+                
+                log('🚀 Initializing LocationService with New York coordinates...');
+                await locationService.initialize(testLocations.newYork);
+                
+            } catch (error) {
+                log('❌ Failed to initialize LocationService', { error: error.message });
+                updateStatus('error', `Initialization failed: ${error.message}`);
+            }
+        };
+
+        window.simulateTravel = function() {
+            if (!locationService?.isReady()) {
+                updateStatus('error', 'LocationService not ready');
+                return;
+            }
+
+            // Simulate travel to London (significant distance)
+            mockPosition = testLocations.london;
+            log('✈️ Simulating travel to London...');
+            updateStatus('info', 'Simulating travel to London (triggering location check)');
+            
+            // Trigger location check
+            locationService.performLocationCheck();
+        };
+
+        window.simulateLocalMove = function() {
+            if (!locationService?.isReady()) {
+                updateStatus('error', 'LocationService not ready');
+                return;
+            }
+
+            // Simulate small move within New York (not significant)
+            mockPosition = { 
+                latitude: 40.7580, 
+                longitude: -73.9855, 
+                city: 'New York, NY (Times Square)' 
+            };
+            
+            log('🚶 Simulating local move within NYC...');
+            updateStatus('info', 'Simulating local move within NYC');
+            
+            locationService.performLocationCheck();
+        };
+
+        window.triggerVisibilityCheck = function() {
+            if (!locationService?.isReady()) {
+                updateStatus('error', 'LocationService not ready');
+                return;
+            }
+
+            log('👁️ Simulating page visibility change...');
+            updateStatus('info', 'Simulating page became visible (checking location)');
+            
+            // Manually trigger the visibility change handler
+            locationService.handleVisibilityChange();
+        };
+
+        window.clearLogs = function() {
+            logOutput.textContent = 'Logs cleared...\n\n';
+        };
+
+        function updateStatus(type, message) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${type}`;
+            statusEl.textContent = message;
+        }
+
+        function updateLocationDisplay() {
+            if (!locationService?.isReady()) return;
+
+            const current = locationService.getCurrentLocation();
+            const session = locationService.sessionStartLocation;
+            const pending = locationService.hasPendingLocationPrompt();
+
+            document.getElementById('currentLocation').textContent = 
+                current ? `${current.city} (${current.latitude.toFixed(4)}, ${current.longitude.toFixed(4)})` : 'None';
+            
+            document.getElementById('sessionLocation').textContent = 
+                session ? `${session.city} (${session.latitude.toFixed(4)}, ${session.longitude.toFixed(4)})` : 'None';
+            
+            document.getElementById('pendingPrompt').textContent = pending ? 'Yes' : 'No';
+        }
+
+        // Initial log
+        log('🔧 LocationService test page loaded');
+        log('📱 Mock geolocation configured for testing');
+        log('👆 Click "Initialize LocationService" to start testing');
+    </script>
+</body>
+</html>

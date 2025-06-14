@@ -45,28 +45,51 @@ class EmailModal {
 
                     <div class="email-modal-body">
                         <div class="value-proposition">
-                            <h3>Want to stay updated? 📧</h3>
-                            <p>Join 10,000+ Muslim professionals who get:</p>
-                            <ul class="benefits-list">
-                                <li>
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                                    </svg>
-                                    New prayer time features & calendar updates
-                                </li>
-                                <li>
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                                    </svg>
-                                    Tips for maintaining prayers as a busy professional
-                                </li>
-                                <li>
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                                    </svg>
-                                    Exclusive tools for Muslim entrepreneurs
-                                </li>
-                            </ul>
+                            <div class="community-badge">
+                                <span class="badge-icon">🕌</span>
+                                <span class="badge-text">Professional Muslim Community</span>
+                            </div>
+                            
+                            <h3>We're building the world's best app for Professional Muslims 🚀</h3>
+                            <p class="community-intro">Join <strong>15,000+ Muslim professionals</strong> who balance career success with their faith:</p>
+                            
+                            <div class="benefits-grid">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">📅</div>
+                                    <div class="benefit-text">
+                                        <strong>Smart Prayer Scheduling</strong>
+                                        <span>Never miss prayers during meetings again</span>
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">💼</div>
+                                    <div class="benefit-text">
+                                        <strong>Career + Faith Tips</strong>
+                                        <span>Weekly insights from successful Muslim professionals</span>
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">🤝</div>
+                                    <div class="benefit-text">
+                                        <strong>Exclusive Network</strong>
+                                        <span>Connect with Muslim entrepreneurs & leaders</span>
+                                    </div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">⚡</div>
+                                    <div class="benefit-text">
+                                        <strong>Early Access</strong>
+                                        <span>Be first to try new productivity tools</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="social-proof">
+                                <div class="testimonial">
+                                    <p>"Finally, an app that understands the unique challenges Muslim professionals face!"</p>
+                                    <cite>— Sarah A., Investment Banker, London</cite>
+                                </div>
+                            </div>
                         </div>
 
                         <form id="emailForm" class="email-form">
@@ -101,12 +124,12 @@ class EmailModal {
                             <div class="form-actions">
                                 <button type="submit" class="btn-primary" id="submitEmail">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                                     </svg>
-                                    Get Free Updates
+                                    Join the Movement
                                 </button>
                                 <button type="button" class="btn-secondary" id="skipEmail">
-                                    Skip for now
+                                    Maybe later
                                 </button>
                             </div>
                         </form>

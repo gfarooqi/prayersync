@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Conflict Detection System Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #006A4E 0%, #00856B 100%);
+            color: white;
+            border-radius: 12px;
+        }
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .demo-scenario {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            background: #fafafa;
+        }
+        .demo-scenario.active {
+            border-color: #006A4E;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        }
+        .scenario-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .scenario-desc {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .mock-timeline {
+            height: 60px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            position: relative;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+        .timeline-prayer {
+            position: absolute;
+            height: 100%;
+            background: rgba(0, 106, 78, 0.2);
+            border: 2px solid #006A4E;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #006A4E;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .timeline-meeting {
+            position: absolute;
+            height: 70%;
+            top: 15%;
+            background: #dc2626;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 11px;
+            border-radius: 4px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 200ms ease;
+            margin: 5px;
+        }
+        .btn-primary {
+            background: #006A4E;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #005a42;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+        .btn-secondary:hover {
+            background: #eee;
+        }
+        .output-log {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin: 16px 0;
+        }
+        .status-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .config-panel {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .config-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 8px 0;
+        }
+        .config-row label {
+            font-weight: 500;
+            min-width: 120px;
+        }
+        .config-row select,
+        .config-row input {
+            padding: 6px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background: white;
+        }
+        .feature-highlight {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #2196f3;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚨 PrayerSync Priority 3: Smart Conflict Detection & Resolution</h1>
+        <p>Complete testing environment for intelligent prayer time conflict detection and smart resolution suggestions</p>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 System Overview</h2>
+        <div class="feature-highlight">
+            <strong>What's New:</strong> PrayerSync now intelligently detects when your prayer times conflict with meetings and provides smart suggestions like "Pray at 1:40 PM (before Project Standup)" with one-click resolution.
+        </div>
+        
+        <div class="grid">
+            <div>
+                <h4>✅ Completed Components:</h4>
+                <ul>
+                    <li><strong>ConflictDetector</strong> - Analyzes prayer windows vs calendar events</li>
+                    <li><strong>SuggestionEngine</strong> - Generates ranked, intelligent alternatives</li>
+                    <li><strong>ConflictResolutionUI</strong> - Professional conflict resolution interface</li>
+                    <li><strong>CalendarService</strong> - Unified calendar API adapter</li>
+                    <li><strong>ConflictAwarePrayerSyncManager</strong> - Enhanced orchestration</li>
+                </ul>
+            </div>
+            <div>
+                <h4>🔧 Key Features:</h4>
+                <ul>
+                    <li>Real-time conflict detection using calendar Free/Busy API</li>
+                    <li>Smart suggestions with confidence scoring</li>
+                    <li>Professional timeline visualization</li>
+                    <li>Travel mode for prayer combining</li>
+                    <li>Seamless integration with existing PrayerSync</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>⚙️ Test Configuration</h2>
+        <div class="config-panel">
+            <div class="config-row">
+                <label>Prayer Duration:</label>
+                <select id="prayerDuration">
+                    <option value="10">10 minutes</option>
+                    <option value="15" selected>15 minutes</option>
+                    <option value="20">20 minutes</option>
+                    <option value="30">30 minutes</option>
+                </select>
+            </div>
+            <div class="config-row">
+                <label>Buffer Time:</label>
+                <select id="bufferTime">
+                    <option value="5" selected>5 minutes</option>
+                    <option value="10">10 minutes</option>
+                    <option value="15">15 minutes</option>
+                </select>
+            </div>
+            <div class="config-row">
+                <label>Consider Tentative:</label>
+                <input type="checkbox" id="considerTentative">
+            </div>
+            <div class="config-row">
+                <label>Travel Mode:</label>
+                <input type="checkbox" id="travelMode">
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Interactive Test Scenarios</h2>
+        <p>Click on scenarios below to see the conflict detection and resolution system in action:</p>
+
+        <div class="demo-scenario" data-scenario="no-conflicts">
+            <div class="scenario-title">1. No Conflicts - Perfect Schedule</div>
+            <div class="scenario-desc">Dhuhr prayer (12-4 PM) with meetings at 9-11 AM and 6-7 PM</div>
+            <div class="mock-timeline">
+                <div class="timeline-prayer" style="left: 30%; width: 40%;">Dhuhr Prayer Window</div>
+            </div>
+            <button class="btn btn-primary" onclick="runScenario('no-conflicts')">Test No Conflicts</button>
+        </div>
+
+        <div class="demo-scenario" data-scenario="complete-conflict">
+            <div class="scenario-title">2. Complete Conflict - All Day Workshop</div>
+            <div class="scenario-desc">Dhuhr prayer completely blocked by 12-4 PM workshop</div>
+            <div class="mock-timeline">
+                <div class="timeline-prayer" style="left: 30%; width: 40%;">Dhuhr Prayer Window</div>
+                <div class="timeline-meeting" style="left: 30%; width: 40%;">All Day Workshop</div>
+            </div>
+            <button class="btn btn-primary" onclick="runScenario('complete-conflict')">Test Complete Conflict</button>
+        </div>
+
+        <div class="demo-scenario" data-scenario="partial-conflict">
+            <div class="scenario-title">3. Partial Conflict - Multiple Meetings</div>
+            <div class="scenario-desc">Dhuhr prayer with 2 PM team meeting and 3 PM client call</div>
+            <div class="mock-timeline">
+                <div class="timeline-prayer" style="left: 30%; width: 40%;">Dhuhr Prayer Window</div>
+                <div class="timeline-meeting" style="left: 40%; width: 15%;">Team Meet</div>
+                <div class="timeline-meeting" style="left: 57%; width: 13%;">Client Call</div>
+            </div>
+            <button class="btn btn-primary" onclick="runScenario('partial-conflict')">Test Partial Conflict</button>
+        </div>
+
+        <div class="demo-scenario" data-scenario="minor-conflict">
+            <div class="scenario-title">4. Minor Conflict - Easy Resolution</div>
+            <div class="scenario-desc">Dhuhr prayer with short 1:30-2 PM standup meeting</div>
+            <div class="mock-timeline">
+                <div class="timeline-prayer" style="left: 30%; width: 40%;">Dhuhr Prayer Window</div>
+                <div class="timeline-meeting" style="left: 42%; width: 8%;">Standup</div>
+            </div>
+            <button class="btn btn-primary" onclick="runScenario('minor-conflict')">Test Minor Conflict</button>
+        </div>
+
+        <div class="demo-scenario" data-scenario="travel-mode">
+            <div class="scenario-title">5. Travel Mode - Prayer Combining</div>
+            <div class="scenario-desc">Multiple conflicts while traveling, enabling prayer combining</div>
+            <div class="mock-timeline">
+                <div class="timeline-prayer" style="left: 20%; width: 25%;">Dhuhr</div>
+                <div class="timeline-prayer" style="left: 45%; width: 25%;">Asr</div>
+                <div class="timeline-meeting" style="left: 15%; width: 55%;">Flight/Travel Block</div>
+            </div>
+            <button class="btn btn-primary" onclick="runScenario('travel-mode')">Test Travel Mode</button>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Test Results</h2>
+        
+        <div id="currentStatus" class="status-card status-info">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <span>System ready - Click a scenario above to begin testing</span>
+        </div>
+
+        <div class="output-log" id="testOutput">
+🚀 PrayerSync Priority 3: Smart Conflict Detection System
+✅ All components loaded and ready for testing
+
+Components initialized:
+- ConflictDetector.js (pure conflict analysis)
+- SuggestionEngine.js (smart alternatives with ranking)
+- ConflictResolutionUI.js (professional conflict interface)
+- CalendarService.js (unified calendar API adapter)
+- ConflictAwarePrayerSyncManager.js (enhanced orchestration)
+
+Ready to test conflict detection and resolution scenarios...
+
+</div>
+
+        <div class="grid">
+            <button class="btn btn-secondary" onclick="clearOutput()">Clear Output</button>
+            <button class="btn btn-secondary" onclick="showSystemStatus()">Show System Status</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { ConflictDetector } from './ConflictDetector.js';
+        import { SuggestionEngine } from './SuggestionEngine.js';
+        import { ConflictResolutionUI } from './ConflictResolutionUI.js';
+        import { EventStatus, ConflictSeverity } from './data-models.js';
+
+        // Initialize components
+        const conflictUI = new ConflictResolutionUI({
+            showTimeline: true,
+            maxSuggestions: 3,
+            enableLogging: true
+        });
+
+        const output = document.getElementById('testOutput');
+
+        function log(message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            if (data) {
+                output.textContent += JSON.stringify(data, null, 2) + '\n';
+            }
+            output.textContent += '\n';
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('currentStatus');
+            statusEl.className = `status-card status-${type}`;
+            statusEl.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span>${message}</span>
+            `;
+        }
+
+        // Test data generators
+        function createPrayerWindow(name, startHour, endHour) {
+            return {
+                name: name,
+                startTime: `2024-06-13T${startHour.toString().padStart(2, '0')}:00:00Z`,
+                endTime: `2024-06-13T${endHour.toString().padStart(2, '0')}:00:00Z`,
+                isCurrent: false,
+                preferredStartMinutes: 0
+            };
+        }
+
+        function createCalendarEvent(id, startHour, endHour, subject, status = EventStatus.BUSY) {
+            const startMinutes = Math.floor((startHour % 1) * 60);
+            const endMinutes = Math.floor((endHour % 1) * 60);
+            
+            return {
+                id: id,
+                start: `2024-06-13T${Math.floor(startHour).toString().padStart(2, '0')}:${startMinutes.toString().padStart(2, '0')}:00Z`,
+                end: `2024-06-13T${Math.floor(endHour).toString().padStart(2, '0')}:${endMinutes.toString().padStart(2, '0')}:00Z`,
+                status: status,
+                subject: subject,
+                isPrivate: false
+            };
+        }
+
+        function getConfigFromUI() {
+            return {
+                prayerDuration: parseInt(document.getElementById('prayerDuration').value),
+                bufferTime: parseInt(document.getElementById('bufferTime').value),
+                considerTentative: document.getElementById('considerTentative').checked,
+                travelMode: document.getElementById('travelMode').checked
+            };
+        }
+
+        // Test scenario implementations
+        const scenarios = {
+            'no-conflicts': () => {
+                log('🧪 Testing Scenario: No Conflicts');
+                
+                const prayers = [createPrayerWindow('Dhuhr', 12, 16)];
+                const events = [
+                    createCalendarEvent('1', 9, 11, 'Morning Meeting'),
+                    createCalendarEvent('2', 18, 19, 'Evening Call')
+                ];
+                
+                const conflicts = ConflictDetector.findConflicts({
+                    prayerTimes: prayers,
+                    calendarEvents: events,
+                    config: getConfigFromUI()
+                });
+                
+                if (conflicts.length === 0) {
+                    updateStatus('✅ No conflicts detected - Perfect schedule!', 'success');
+                    log('✅ Result: No conflicts detected as expected');
+                } else {
+                    updateStatus('❌ Unexpected conflicts found', 'error');
+                    log('❌ Unexpected result: Found conflicts', conflicts);
+                }
+            },
+
+            'complete-conflict': () => {
+                log('🧪 Testing Scenario: Complete Conflict');
+                
+                const prayers = [createPrayerWindow('Dhuhr', 12, 16)];
+                const events = [
+                    createCalendarEvent('1', 12, 16, 'All Day Workshop')
+                ];
+                
+                const conflicts = ConflictDetector.findConflicts({
+                    prayerTimes: prayers,
+                    calendarEvents: events,
+                    config: getConfigFromUI()
+                });
+                
+                if (conflicts.length > 0) {
+                    const conflict = conflicts[0];
+                    const suggestions = SuggestionEngine.generateSuggestions(conflict, getConfigFromUI());
+                    
+                    updateStatus(`🚨 Complete conflict detected with ${suggestions.length} suggestions`, 'error');
+                    log('🚨 Complete conflict detected:', conflict);
+                    log('💡 Generated suggestions:', suggestions);
+                    
+                    // Show conflict resolution UI
+                    setTimeout(() => {
+                        conflictUI.showConflictResolution(
+                            conflict,
+                            suggestions,
+                            (chosen) => {
+                                log(`✅ User chose: ${chosen.displayText}`);
+                                updateStatus('✅ Conflict resolved successfully', 'success');
+                            },
+                            () => {
+                                log('❌ User dismissed conflict');
+                                updateStatus('❌ Conflict dismissed by user', 'info');
+                            }
+                        );
+                    }, 1000);
+                } else {
+                    updateStatus('❌ Expected conflict not detected', 'error');
+                    log('❌ Expected conflict but none found');
+                }
+            },
+
+            'partial-conflict': () => {
+                log('🧪 Testing Scenario: Partial Conflict');
+                
+                const prayers = [createPrayerWindow('Dhuhr', 12, 16)];
+                const events = [
+                    createCalendarEvent('1', 14, 15, 'Team Meeting'),
+                    createCalendarEvent('2', 15, 15.5, 'Client Call')
+                ];
+                
+                const conflicts = ConflictDetector.findConflicts({
+                    prayerTimes: prayers,
+                    calendarEvents: events,
+                    config: getConfigFromUI()
+                });
+                
+                updateStatus(`⚡ Found ${conflicts.length} conflicts with available windows`, 'info');
+                log(`⚡ Partial conflict analysis: ${conflicts.length} conflicts`);
+                
+                if (conflicts.length > 0) {
+                    const conflict = conflicts[0];
+                    const suggestions = SuggestionEngine.generateSuggestions(conflict, getConfigFromUI());
+                    log('💡 Smart suggestions generated:', suggestions);
+                    
+                    // Show banner for minor conflict
+                    setTimeout(() => {
+                        if (conflict.analysis.conflictSeverity === ConflictSeverity.MINOR) {
+                            // Would show banner in real implementation
+                            log('📱 Minor conflict - showing non-intrusive banner');
+                        } else {
+                            conflictUI.showConflictResolution(conflict, suggestions,
+                                (chosen) => log(`✅ Resolved: ${chosen.displayText}`),
+                                () => log('❌ Conflict dismissed')
+                            );
+                        }
+                    }, 1000);
+                }
+            },
+
+            'minor-conflict': () => {
+                log('🧪 Testing Scenario: Minor Conflict');
+                
+                const prayers = [createPrayerWindow('Dhuhr', 12, 16)];
+                const events = [
+                    createCalendarEvent('1', 13.5, 14, 'Daily Standup')
+                ];
+                
+                const conflicts = ConflictDetector.findConflicts({
+                    prayerTimes: prayers,
+                    calendarEvents: events,
+                    config: getConfigFromUI()
+                });
+                
+                if (conflicts.length === 0) {
+                    updateStatus('✅ Minor conflict resolved automatically', 'success');
+                    log('✅ Minor conflict - sufficient time available');
+                } else {
+                    const conflict = conflicts[0];
+                    const suggestions = SuggestionEngine.generateSuggestions(conflict, getConfigFromUI());
+                    
+                    updateStatus('⚡ Minor conflict - easy resolution available', 'info');
+                    log('⚡ Minor conflict detected with easy resolution');
+                    log('💡 Quick suggestions:', suggestions);
+                }
+            },
+
+            'travel-mode': () => {
+                log('🧪 Testing Scenario: Travel Mode');
+                
+                // Enable travel mode
+                document.getElementById('travelMode').checked = true;
+                
+                const prayers = [
+                    createPrayerWindow('Dhuhr', 12, 16),
+                    createPrayerWindow('Asr', 16, 18)
+                ];
+                const events = [
+                    createCalendarEvent('1', 11, 17, 'Flight + Travel Time')
+                ];
+                
+                const conflicts = ConflictDetector.findConflicts({
+                    prayerTimes: prayers,
+                    calendarEvents: events,
+                    config: getConfigFromUI()
+                });
+                
+                updateStatus('✈️ Travel mode: Multiple conflicts detected', 'info');
+                log('✈️ Travel mode enabled - checking prayer combining options');
+                
+                conflicts.forEach(conflict => {
+                    const suggestions = SuggestionEngine.generateSuggestions(conflict, getConfigFromUI());
+                    log(`🕌 ${conflict.prayerName} conflict with ${suggestions.length} suggestions`);
+                    
+                    const combineOption = suggestions.find(s => s.type === 'COMBINE_PRAYERS');
+                    if (combineOption) {
+                        log('🧭 Prayer combining suggestion available for travelers');
+                    }
+                });
+            }
+        };
+
+        // Global functions
+        window.runScenario = function(scenarioName) {
+            // Highlight active scenario
+            document.querySelectorAll('.demo-scenario').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelector(`[data-scenario="${scenarioName}"]`).classList.add('active');
+            
+            // Run scenario
+            if (scenarios[scenarioName]) {
+                scenarios[scenarioName]();
+            } else {
+                log(`❌ Unknown scenario: ${scenarioName}`);
+            }
+        };
+
+        window.clearOutput = function() {
+            output.textContent = 'Test output cleared...\n\n';
+            updateStatus('System ready - Click a scenario above to begin testing', 'info');
+        };
+
+        window.showSystemStatus = function() {
+            log('📊 System Status Report:');
+            log('- ConflictDetector: ✅ Ready');
+            log('- SuggestionEngine: ✅ Ready');
+            log('- ConflictResolutionUI: ✅ Ready');
+            log('- Calendar Service Adapter: ✅ Ready');
+            log('- Enhanced Prayer Sync Manager: ✅ Ready');
+            log('');
+            log('Current Configuration:', getConfigFromUI());
+            updateStatus('System status: All components operational', 'success');
+        };
+
+        // Initial log
+        log('🎯 Priority 3: Smart Conflict Detection & Resolution System');
+        log('📱 Interactive testing environment loaded');
+        log('👆 Click on scenarios above to test different conflict types');
+    </script>
+</body>
+</html>

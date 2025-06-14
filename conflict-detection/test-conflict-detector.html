@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConflictDetector Test Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f9f9f9;
+        }
+        .test-case {
+            border-left: 4px solid #006A4E;
+            padding: 15px;
+            margin: 15px 0;
+            background: white;
+        }
+        .test-case.passed {
+            border-left-color: #16a34a;
+            background: #f0fdf4;
+        }
+        .test-case.failed {
+            border-left-color: #dc2626;
+            background: #fef2f2;
+        }
+        .test-result {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .test-result.passed { color: #16a34a; }
+        .test-result.failed { color: #dc2626; }
+        .test-output {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 13px;
+        }
+        button {
+            background: #006A4E;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a42;
+        }
+        .summary {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .summary.passed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .summary.failed {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .timeline {
+            display: flex;
+            height: 40px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+            position: relative;
+            background: linear-gradient(to right, #f0f0f0 0%, #f8f8f8 100%);
+        }
+        .timeline-event {
+            position: absolute;
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: white;
+            font-weight: bold;
+        }
+        .timeline-prayer {
+            background: rgba(0, 106, 78, 0.3);
+            border: 2px solid #006A4E;
+        }
+        .timeline-meeting {
+            background: #dc2626;
+        }
+        .timeline-available {
+            background: #16a34a;
+        }
+    </style>
+</head>
+<body>
+    <h1>ConflictDetector Test Suite</h1>
+    <p>Comprehensive tests for smart prayer time conflict detection logic.</p>
+
+    <div class="test-section">
+        <h3>Test Controls</h3>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="clearResults()">Clear Results</button>
+        <button onclick="runSingleTest()">Run Single Test</button>
+        
+        <div id="testSummary" class="summary" style="display: none;">
+            <span id="summaryText">Tests not run</span>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Results</h3>
+        <div id="testResults">
+            <p>Click "Run All Tests" to execute the test suite.</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Output Log</h3>
+        <div id="testOutput" class="test-output">ConflictDetector Test Suite Ready
+Test cases loaded: checking for edge cases, overlapping events, and accurate conflict detection...
+
+</div>
+    </div>
+
+    <script type="module">
+        import { ConflictDetector } from './ConflictDetector.js';
+        import { EventStatus, ConflictSeverity, DefaultConflictConfig } from './data-models.js';
+
+        let testResults = [];
+        const output = document.getElementById('testOutput');
+        const resultsContainer = document.getElementById('testResults');
+
+        function log(message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            if (data) {
+                output.textContent += JSON.stringify(data, null, 2) + '\n';
+            }
+            output.textContent += '\n';
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Test data generators
+        function createPrayerWindow(name, startHour, endHour, date = '2024-06-13') {
+            return {
+                name: name,
+                startTime: `${date}T${startHour.toString().padStart(2, '0')}:00:00Z`,
+                endTime: `${date}T${endHour.toString().padStart(2, '0')}:00:00Z`,
+                isCurrent: false,
+                preferredStartMinutes: 0
+            };
+        }
+
+        function createCalendarEvent(id, startHour, endHour, subject, status = EventStatus.BUSY, date = '2024-06-13') {
+            return {
+                id: id,
+                start: `${date}T${startHour.toString().padStart(2, '0')}:00:00Z`,
+                end: `${date}T${endHour.toString().padStart(2, '0')}:00:00Z`,
+                status: status,
+                subject: subject,
+                isPrivate: false
+            };
+        }
+
+        // Individual test functions
+        function testNoConflicts() {
+            log('🧪 Testing: No conflicts scenario');
+            
+            const prayers = [
+                createPrayerWindow('Dhuhr', 12, 16), // 12 PM - 4 PM
+                createPrayerWindow('Asr', 16, 18)    // 4 PM - 6 PM
+            ];
+            
+            const events = [
+                createCalendarEvent('1', 9, 11, 'Morning Meeting'),   // 9-11 AM
+                createCalendarEvent('2', 18, 19, 'Evening Call')      // 6-7 PM
+            ];
+            
+            const conflicts = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events
+            });
+            
+            const passed = conflicts.length === 0;
+            log(`✓ No conflicts test: ${passed ? 'PASSED' : 'FAILED'}`);
+            
+            return {
+                name: 'No Conflicts',
+                passed: passed,
+                details: `Expected 0 conflicts, got ${conflicts.length}`,
+                conflicts: conflicts
+            };
+        }
+
+        function testSingleConflict() {
+            log('🧪 Testing: Single conflict scenario');
+            
+            const prayers = [
+                createPrayerWindow('Dhuhr', 12, 16) // 12 PM - 4 PM
+            ];
+            
+            const events = [
+                createCalendarEvent('1', 12, 16, 'All Day Workshop') // Completely blocks Dhuhr
+            ];
+            
+            const conflicts = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events
+            });
+            
+            const passed = conflicts.length === 1 && 
+                          conflicts[0].prayerName === 'Dhuhr' &&
+                          conflicts[0].analysis.conflictSeverity === ConflictSeverity.COMPLETE;
+            
+            log(`✓ Single conflict test: ${passed ? 'PASSED' : 'FAILED'}`);
+            if (!passed) {
+                log('Expected: 1 complete conflict for Dhuhr');
+                log('Actual:', conflicts);
+            }
+            
+            return {
+                name: 'Single Complete Conflict',
+                passed: passed,
+                details: `Expected 1 complete Dhuhr conflict, got ${conflicts.length} conflicts`,
+                conflicts: conflicts
+            };
+        }
+
+        function testPartialConflict() {
+            log('🧪 Testing: Partial conflict scenario');
+            
+            const prayers = [
+                createPrayerWindow('Dhuhr', 12, 16) // 12 PM - 4 PM (240 minutes)
+            ];
+            
+            const events = [
+                createCalendarEvent('1', 12, 14, 'Team Meeting'),     // 12-2 PM (blocks 120 min)
+                createCalendarEvent('2', 15, 16, 'Client Call')       // 3-4 PM (blocks 60 min)
+                // Leaves 2-3 PM free (60 minutes) - enough for prayer with buffer
+            ];
+            
+            const conflicts = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events,
+                config: { prayerDuration: 15, bufferTime: 5 } // Need 25 minutes total
+            });
+            
+            // Should NOT be a conflict since 60-minute gap is sufficient
+            const passed = conflicts.length === 0;
+            
+            log(`✓ Partial conflict test: ${passed ? 'PASSED' : 'FAILED'}`);
+            if (!passed) {
+                log('Expected: No conflicts (60 min gap available)');
+                log('Actual conflicts:', conflicts);
+            }
+            
+            return {
+                name: 'Partial Conflict (Should Resolve)',
+                passed: passed,
+                details: `Expected 0 conflicts (sufficient gap), got ${conflicts.length}`,
+                conflicts: conflicts
+            };
+        }
+
+        function testMinorConflict() {
+            log('🧪 Testing: Minor conflict scenario');
+            
+            const prayers = [
+                createPrayerWindow('Dhuhr', 12, 16) // 12 PM - 4 PM
+            ];
+            
+            const events = [
+                createCalendarEvent('1', 13, 14, 'Short Meeting'),    // 1-2 PM (60 min blocked)
+                createCalendarEvent('2', 15, 15.5, 'Quick Call')      // 3-3:30 PM (30 min blocked)  
+                // Leaves: 12-1 PM (60 min), 2-3 PM (60 min), 3:30-4 PM (30 min)
+            ];
+            
+            const conflicts = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events,
+                config: { prayerDuration: 15, bufferTime: 5 } // Need 25 minutes total
+            });
+            
+            // Should NOT be a conflict - multiple good slots available
+            const passed = conflicts.length === 0;
+            
+            log(`✓ Minor conflict test: ${passed ? 'PASSED' : 'FAILED'}`);
+            
+            return {
+                name: 'Minor Conflict (Multiple Slots)',
+                passed: passed,
+                details: `Expected 0 conflicts (multiple slots), got ${conflicts.length}`,
+                conflicts: conflicts
+            };
+        }
+
+        function testOverlappingEvents() {
+            log('🧪 Testing: Overlapping events merging');
+            
+            const prayers = [
+                createPrayerWindow('Dhuhr', 12, 16) // 12 PM - 4 PM
+            ];
+            
+            const events = [
+                createCalendarEvent('1', 12, 13, 'Meeting Part 1'),   // 12-1 PM
+                createCalendarEvent('2', 12.5, 14, 'Meeting Part 2'), // 12:30-2 PM (overlaps with Part 1)
+                createCalendarEvent('3', 13.5, 15, 'Meeting Part 3')  // 1:30-3 PM (overlaps with Part 2)
+                // Should merge into 12-3 PM block, leaving 3-4 PM free (60 minutes)
+            ];
+            
+            const conflicts = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events,
+                config: { prayerDuration: 15, bufferTime: 5 }
+            });
+            
+            // Should NOT be a conflict - 60 minute slot at end is sufficient
+            const passed = conflicts.length === 0;
+            
+            log(`✓ Overlapping events test: ${passed ? 'PASSED' : 'FAILED'}`);
+            
+            return {
+                name: 'Overlapping Events Merge',
+                passed: passed,
+                details: `Expected 0 conflicts (events should merge), got ${conflicts.length}`,
+                conflicts: conflicts
+            };
+        }
+
+        function testIgnoredEvents() {
+            log('🧪 Testing: Ignored event patterns');
+            
+            const prayers = [
+                createPrayerWindow('Dhuhr', 12, 16) // 12 PM - 4 PM
+            ];
+            
+            const events = [
+                createCalendarEvent('1', 12, 13, 'Lunch Break'),      // Should be ignored
+                createCalendarEvent('2', 13, 14, 'Personal Time'),    // Should be ignored
+                createCalendarEvent('3', 14, 15, 'Important Meeting') // Should NOT be ignored
+            ];
+            
+            const conflicts = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events,
+                config: { 
+                    prayerDuration: 15, 
+                    bufferTime: 5,
+                    ignoredEventPatterns: ['lunch', 'personal time']
+                }
+            });
+            
+            // Should NOT be a conflict - only 1 hour blocked (2-3 PM), rest available
+            const passed = conflicts.length === 0;
+            
+            log(`✓ Ignored events test: ${passed ? 'PASSED' : 'FAILED'}`);
+            
+            return {
+                name: 'Ignored Event Patterns',
+                passed: passed,
+                details: `Expected 0 conflicts (lunch/personal ignored), got ${conflicts.length}`,
+                conflicts: conflicts
+            };
+        }
+
+        function testTentativeEvents() {
+            log('🧪 Testing: Tentative events handling');
+            
+            const prayers = [
+                createPrayerWindow('Dhuhr', 12, 16) // 12 PM - 4 PM
+            ];
+            
+            const events = [
+                createCalendarEvent('1', 12, 16, 'Maybe Meeting', EventStatus.TENTATIVE)
+            ];
+            
+            // Test 1: Don't consider tentative (default)
+            const conflicts1 = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events,
+                config: { considerTentative: false }
+            });
+            
+            // Test 2: Consider tentative
+            const conflicts2 = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events,
+                config: { considerTentative: true }
+            });
+            
+            const passed = conflicts1.length === 0 && conflicts2.length === 1;
+            
+            log(`✓ Tentative events test: ${passed ? 'PASSED' : 'FAILED'}`);
+            
+            return {
+                name: 'Tentative Events Handling',
+                passed: passed,
+                details: `Expected 0 conflicts (ignore tentative), 1 conflict (consider tentative). Got ${conflicts1.length}, ${conflicts2.length}`,
+                conflicts: conflicts2
+            };
+        }
+
+        function testAvailableSlotCalculation() {
+            log('🧪 Testing: Available slot calculation');
+            
+            const prayers = [
+                createPrayerWindow('Dhuhr', 12, 16) // 12 PM - 4 PM (240 minutes)
+            ];
+            
+            const events = [
+                createCalendarEvent('1', 13, 14, 'Meeting 1'),    // 1-2 PM
+                createCalendarEvent('2', 15, 15.5, 'Meeting 2')   // 3-3:30 PM
+                // Available slots: 12-1 PM (60 min), 2-3 PM (60 min), 3:30-4 PM (30 min)
+            ];
+            
+            // Create a scenario where largest slot is not quite enough
+            const conflicts = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events,
+                config: { 
+                    prayerDuration: 45,  // Need 45 + 10 = 55 minutes
+                    bufferTime: 5
+                }
+            });
+            
+            // Should find conflict since largest slot (60 min) < required (55 min) is actually sufficient
+            // But let's test with 70 minute requirement
+            const conflicts2 = ConflictDetector.findConflicts({
+                prayerTimes: prayers,
+                calendarEvents: events,
+                config: { 
+                    prayerDuration: 60,  // Need 60 + 10 = 70 minutes
+                    bufferTime: 5
+                }
+            });
+            
+            const passed = conflicts.length === 0 && conflicts2.length === 1;
+            
+            log(`✓ Available slot calculation: ${passed ? 'PASSED' : 'FAILED'}`);
+            
+            return {
+                name: 'Available Slot Calculation',
+                passed: passed,
+                details: `Expected no conflict for 55min need, conflict for 70min need. Got ${conflicts.length}, ${conflicts2.length}`,
+                conflicts: conflicts2
+            };
+        }
+
+        // Test runner
+        window.runAllTests = function() {
+            log('🚀 Starting ConflictDetector Test Suite...');
+            testResults = [];
+            
+            const tests = [
+                testNoConflicts,
+                testSingleConflict,
+                testPartialConflict,
+                testMinorConflict,
+                testOverlappingEvents,
+                testIgnoredEvents,
+                testTentativeEvents,
+                testAvailableSlotCalculation
+            ];
+            
+            for (const test of tests) {
+                try {
+                    const result = test();
+                    testResults.push(result);
+                } catch (error) {
+                    log(`❌ Test failed with error: ${error.message}`);
+                    testResults.push({
+                        name: test.name || 'Unknown Test',
+                        passed: false,
+                        details: `Error: ${error.message}`,
+                        conflicts: []
+                    });
+                }
+            }
+            
+            displayResults();
+            updateSummary();
+        };
+
+        function displayResults() {
+            resultsContainer.innerHTML = '';
+            
+            testResults.forEach((result, index) => {
+                const testCase = document.createElement('div');
+                testCase.className = `test-case ${result.passed ? 'passed' : 'failed'}`;
+                
+                testCase.innerHTML = `
+                    <h4>Test ${index + 1}: ${result.name}</h4>
+                    <div class="test-result ${result.passed ? 'passed' : 'failed'}">
+                        ${result.passed ? '✅ PASSED' : '❌ FAILED'}
+                    </div>
+                    <p>${result.details}</p>
+                    ${result.conflicts.length > 0 ? `
+                        <details>
+                            <summary>Conflicts Found (${result.conflicts.length})</summary>
+                            <pre>${JSON.stringify(result.conflicts, null, 2)}</pre>
+                        </details>
+                    ` : ''}
+                `;
+                
+                resultsContainer.appendChild(testCase);
+            });
+        }
+
+        function updateSummary() {
+            const summary = document.getElementById('testSummary');
+            const summaryText = document.getElementById('summaryText');
+            
+            const passedCount = testResults.filter(r => r.passed).length;
+            const totalCount = testResults.length;
+            const allPassed = passedCount === totalCount;
+            
+            summary.className = `summary ${allPassed ? 'passed' : 'failed'}`;
+            summaryText.textContent = `${passedCount}/${totalCount} tests passed`;
+            summary.style.display = 'block';
+            
+            log(`📊 Test Summary: ${passedCount}/${totalCount} tests passed`);
+            
+            if (allPassed) {
+                log('🎉 All tests passed! ConflictDetector is working correctly.');
+            } else {
+                log('⚠️ Some tests failed. Review the results above.');
+            }
+        }
+
+        window.clearResults = function() {
+            output.textContent = 'Test output cleared...\n\n';
+            resultsContainer.innerHTML = '<p>Click "Run All Tests" to execute the test suite.</p>';
+            document.getElementById('testSummary').style.display = 'none';
+            testResults = [];
+        };
+
+        window.runSingleTest = function() {
+            log('🧪 Running single test: No conflicts scenario...');
+            const result = testNoConflicts();
+            testResults = [result];
+            displayResults();
+            updateSummary();
+        };
+
+        // Initial log
+        log('📋 ConflictDetector Test Suite loaded');
+        log('🔧 Test cases include: no conflicts, single conflict, partial conflicts, overlapping events, ignored patterns, tentative events, and slot calculations');
+        log('👆 Click "Run All Tests" to execute the full test suite');
+    </script>
+</body>
+</html>

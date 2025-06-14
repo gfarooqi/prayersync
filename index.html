@@ -408,19 +408,19 @@
                             Or Connect Directly to Your Calendar:
                         </h4>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; max-width: 600px; margin: 0 auto;">
-                            <button class="calendar-connect-btn" onclick="connectGoogleCalendar()" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.5rem; background: #4285f4; color: white; border: none; border-radius: var(--radius-md); font-weight: 500; cursor: pointer; transition: var(--transition);">
+                            <a href="/api/auth/google" class="calendar-connect-btn" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.5rem; background: #4285f4; color: white; border: none; border-radius: var(--radius-md); font-weight: 500; cursor: pointer; transition: var(--transition); text-decoration: none;">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
                                 </svg>
                                 Google Calendar
-                            </button>
+                            </a>
                             
-                            <button class="calendar-connect-btn" onclick="connectOutlookCalendar()" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.5rem; background: #0078d4; color: white; border: none; border-radius: var(--radius-md); font-weight: 500; cursor: pointer; transition: var(--transition);">
+                            <a href="/api/auth/microsoft" class="calendar-connect-btn" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.5rem; background: #0078d4; color: white; border: none; border-radius: var(--radius-md); font-weight: 500; cursor: pointer; transition: var(--transition); text-decoration: none;">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M7 2h10c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2zm5 18c.8 0 1.5-.7 1.5-1.5S12.8 17 12 17s-1.5.7-1.5 1.5S11.2 20 12 20z"/>
                                 </svg>
                                 Outlook
-                            </button>
+                            </a>
                             
                             <button class="calendar-connect-btn" onclick="connectAppleCalendar()" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.5rem; background: #000; color: white; border: none; border-radius: var(--radius-md); font-weight: 500; cursor: pointer; transition: var(--transition);">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -648,5 +648,17 @@
     <script src="app.js" defer></script>
     <script src="simple-calendar.js" defer></script>
     <script src="init-backend.js" defer></script>
+    
+    <!-- Calendar Integration -->
+    <script type="module" src="calendar-integration/app-integration.js" defer></script>
+    
+    <!-- Location Awareness Integration -->
+    <script type="module" src="location-awareness/app-location-integration.js" defer></script>
+    
+    <!-- Conflict Detection Integration -->
+    <script type="module" src="conflict-detection/app-conflict-integration.js" defer></script>
+    
+    <!-- Qibla Compass Integration -->
+    <script type="module" src="qibla-compass/app-qibla-integration.js" defer></script>
 </body>
 </html>
