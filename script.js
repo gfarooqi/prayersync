@@ -90,7 +90,7 @@ class PrayerTimesCalculator {
         const decl = this.sunDeclination(jd);
         const eqt = this.equationOfTime(jd);
         
-        const noon = 12 - coords.longitude / 15 - eqt / 60 - timezone;
+        const noon = 12 - coords.longitude / 15 - eqt / 60 + timezone;
         
         const method = this.methods[this.calculationMethod];
         const fajrAngle = method.fajr;
@@ -152,8 +152,14 @@ class PrayerTimesCalculator {
 
     // Convert decimal hours to time format
     hoursToTime(hours) {
-        if (hours < 0) hours += 24;
-        if (hours >= 24) hours -= 24;
+        // Handle invalid inputs
+        if (!isFinite(hours) || isNaN(hours)) {
+            return '--:--';
+        }
+        
+        // Normalize to 24-hour format
+        while (hours < 0) hours += 24;
+        while (hours >= 24) hours -= 24;
         
         const h = Math.floor(hours);
         const m = Math.floor((hours - h) * 60);
