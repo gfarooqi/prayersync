@@ -90,7 +90,7 @@ class PrayerTimesCalculator {
         const decl = this.sunDeclination(jd);
         const eqt = this.equationOfTime(jd);
         
-        const noon = 12 - coords.longitude / 15 - eqt / 60 + timezone;
+        const noon = 12 - coords.longitude / 15 - eqt / 60 - timezone;
         
         const method = this.methods[this.calculationMethod];
         const fajrAngle = method.fajr;
@@ -100,11 +100,21 @@ class PrayerTimesCalculator {
         
         // Fajr
         const fajrHourAngle = this.sunHourAngle(coords.latitude, decl, 90 + fajrAngle);
-        times.fajr = noon - fajrHourAngle / 15;
+        if (fajrHourAngle !== null) {
+            times.fajr = noon - fajrHourAngle / 15;
+        } else {
+            times.fajr = noon - 1.5; // Fallback: 1.5 hours before noon
+        }
         
         // Sunrise
         const sunriseHourAngle = this.sunHourAngle(coords.latitude, decl, 90.833);
-        times.sunrise = noon - sunriseHourAngle / 15;
+        if (sunriseHourAngle !== null) {
+            times.sunrise = noon - sunriseHourAngle / 15;
+            times.maghrib = noon + sunriseHourAngle / 15; // Maghrib uses same angle as sunrise
+        } else {
+            times.sunrise = noon - 1; // Fallback
+            times.maghrib = noon + 1; // Fallback
+        }
         
         // Dhuhr
         times.dhuhr = noon;
@@ -112,14 +122,19 @@ class PrayerTimesCalculator {
         // Asr (Shafi method)
         const asrAngle = this.radToDeg(Math.atan(1 + Math.tan(this.degToRad(Math.abs(coords.latitude - decl)))));
         const asrHourAngle = this.sunHourAngle(coords.latitude, decl, 90 - asrAngle);
-        times.asr = noon + asrHourAngle / 15;
-        
-        // Sunset/Maghrib
-        times.maghrib = noon + sunriseHourAngle / 15;
+        if (asrHourAngle !== null) {
+            times.asr = noon + asrHourAngle / 15;
+        } else {
+            times.asr = noon + 2; // Fallback: 2 hours after noon
+        }
         
         // Isha
         const ishaHourAngle = this.sunHourAngle(coords.latitude, decl, 90 + ishaAngle);
-        times.isha = noon + ishaHourAngle / 15;
+        if (ishaHourAngle !== null) {
+            times.isha = noon + ishaHourAngle / 15;
+        } else {
+            times.isha = times.maghrib + 1.5; // Fallback: 1.5 hours after maghrib
+        }
         
         // Handle Isha time for high latitudes
         if (typeof method.isha === 'string' && method.isha.includes('min')) {
@@ -258,7 +273,7 @@ class CalendarIntegration {
 }
 
 // Main app class
-class SalatApp {
+class PrayerSync {
     constructor() {
         this.calculator = new PrayerTimesCalculator();
         this.calendarIntegration = new CalendarIntegration();
@@ -271,129 +286,375 @@ class SalatApp {
     }
 
     async init() {
+        console.log('Initializing PrayerSync app...');
+        this.loadSettings(); // Load settings before setting up listeners to avoid infinite loop
         this.setupEventListeners();
-        await this.getLocation();
-        this.loadSettings();
-        this.updatePrayerTimes();
+        await this.getLocation(); // This now calls updatePrayerTimes internally
         this.startCountdown();
-        this.checkNotificationPermission();
-        this.loadPrayerStatus();
         this.updateDate();
+        console.log('PrayerSync app initialized successfully');
     }
 
     setupEventListeners() {
-        // Settings modal
-        document.getElementById('settingsBtn').addEventListener('click', () => {
-            document.getElementById('settingsModal').style.display = 'block';
-        });
-
-        document.querySelector('.close').addEventListener('click', () => {
-            document.getElementById('settingsModal').style.display = 'none';
-        });
-
-        document.getElementById('saveSettings').addEventListener('click', () => {
-            this.saveSettings();
-        });
-
-        // Calendar modal
-        document.getElementById('calendarBtn').addEventListener('click', () => {
-            document.getElementById('calendarModal').style.display = 'block';
-            this.updateSubscriptionUrl();
-        });
-
-        document.getElementById('calendarClose').addEventListener('click', () => {
-            document.getElementById('calendarModal').style.display = 'none';
-        });
-
-        // Export buttons
-        document.getElementById('exportToday').addEventListener('click', () => {
-            this.exportPrayerTimes('today');
-        });
-
-        document.getElementById('exportWeek').addEventListener('click', () => {
-            this.exportPrayerTimes('week');
-        });
-
-        document.getElementById('exportMonth').addEventListener('click', () => {
-            this.exportPrayerTimes('month');
-        });
-
-        // Copy URL button
-        document.getElementById('copyUrl').addEventListener('click', () => {
-            const urlInput = document.getElementById('subscriptionUrl');
-            urlInput.select();
-            document.execCommand('copy');
-            alert('URL copied to clipboard!');
-        });
-
-        // Google Calendar button
-        document.getElementById('googleConnect').addEventListener('click', () => {
-            this.connectGoogleCalendar();
-        });
-
-        // Prayer checkboxes
-        document.querySelectorAll('.prayer-check').forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                this.updatePrayerStatus(e.target.id.replace('-check', ''), e.target.checked);
+        // Only add listeners for elements that exist
+        const calcMethodEl = document.getElementById('calcMethod');
+        if (calcMethodEl) {
+            calcMethodEl.addEventListener('change', () => {
+                this.saveSettings();
             });
-        });
+        }
 
-        // Notification button
-        document.getElementById('notificationBtn').addEventListener('click', () => {
-            this.requestNotificationPermission();
-        });
+        const professionalModeEl = document.getElementById('professionalMode');
+        if (professionalModeEl) {
+            professionalModeEl.addEventListener('change', (e) => {
+                this.calendarIntegration.professionalMode = e.target.checked;
+                this.saveSettings();
+            });
+        }
 
-        // Calendar settings
-        document.getElementById('eventDuration').addEventListener('change', (e) => {
-            this.calendarIntegration.eventDuration = parseInt(e.target.value);
-            this.saveSettings();
-        });
-
-        document.getElementById('professionalMode').addEventListener('change', (e) => {
-            this.calendarIntegration.professionalMode = e.target.checked;
-            this.saveSettings();
-        });
-
-        document.getElementById('includeLocation').addEventListener('change', (e) => {
-            this.calendarIntegration.includeLocation = e.target.checked;
-        });
+        const reminderTimeEl = document.getElementById('reminderTime');
+        if (reminderTimeEl) {
+            reminderTimeEl.addEventListener('change', (e) => {
+                this.calendarIntegration.eventDuration = parseInt(e.target.value);
+                this.saveSettings();
+            });
+        }
     }
 
     async getLocation() {
+        const locationEl = document.getElementById('locationText');
+        
         try {
-            const position = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject);
+            // Update UI to show loading
+            if (locationEl) {
+                locationEl.textContent = 'Detecting location...';
+            }
+            
+            // Check for secure context (HTTPS requirement)
+            if (window.isSecureContext === false) {
+                throw new Error('Geolocation requires a secure context (HTTPS).');
+            }
+            
+            if (!navigator.geolocation) {
+                throw new Error('Geolocation not supported by this browser');
+            }
+            
+            // Quick check for existing permissions to avoid hanging (Safari compatible)
+            if (navigator.permissions && navigator.permissions.query) {
+                try {
+                    const permission = await navigator.permissions.query({name: 'geolocation'});
+                    if (permission.state === 'denied') {
+                        console.log('Geolocation permission is denied - skipping to IP fallback');
+                        if (locationEl) {
+                            locationEl.textContent = 'Location access denied. Using IP location...';
+                        }
+                        throw new Error('Permission denied by browser');
+                    }
+                } catch (permError) {
+                    console.log('Could not check geolocation permissions (likely Safari):', permError.message);
+                    // Continue with normal flow if permissions API fails (e.g., Safari)
+                }
+            } else {
+                console.log('Permissions API not supported (likely Safari) - proceeding with standard geolocation');
+            }
+            
+            // Tier 1: Try high-accuracy geolocation first
+            console.log('Requesting high-accuracy geolocation...');
+            try {
+                const position = await this.fetchPosition({
+                    enableHighAccuracy: true,
+                    timeout: 8000, // Give GPS time to acquire signal
+                    maximumAge: 300000 // 5 minutes
+                });
+                
+                this.setLocationFromCoords(position.coords, 'GPS (High Accuracy)');
+                console.log('High-accuracy location set successfully:', this.location);
+                return;
+                
+            } catch (highAccError) {
+                console.warn('High-accuracy location failed:', highAccError.message);
+                
+                // Handle permission denied specifically (GeolocationPositionError.PERMISSION_DENIED = 1)
+                if (highAccError.code === 1 || highAccError.message?.includes('denied') || highAccError.message?.includes('User denied')) {
+                    console.log('User denied geolocation permission - skipping to IP fallback');
+                    if (locationEl) {
+                        locationEl.textContent = 'Location access denied. Using IP location...';
+                    }
+                    throw new Error('Permission denied'); // Skip directly to IP fallback
+                }
+                
+                // Tier 2: Try low-accuracy geolocation
+                console.log('Trying low-accuracy geolocation...');
+                try {
+                    const position = await this.fetchPosition({
+                        enableHighAccuracy: false,
+                        timeout: 5000, // Network location should be faster
+                        maximumAge: 600000 // 10 minutes
+                    });
+                    
+                    this.setLocationFromCoords(position.coords, 'Network Location');
+                    console.log('Low-accuracy location set successfully:', this.location);
+                    return;
+                    
+                } catch (lowAccError) {
+                    console.warn('Low-accuracy location also failed:', lowAccError.message);
+                    throw lowAccError; // Proceed to IP fallback
+                }
+            }
+            
+        } catch (geoError) {
+            console.error('All geolocation attempts failed:', geoError.message);
+            
+            // Tier 3: IP-based geolocation fallback
+            try {
+                if (locationEl) {
+                    locationEl.textContent = 'Finding location by IP...';
+                }
+                
+                console.log('Attempting IP-based geolocation...');
+                
+                // Try with a timeout to prevent hanging
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
+                const response = await fetch('https://ipapi.co/json/', {
+                    signal: controller.signal,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`IP API returned status ${response.status}: ${response.statusText}`);
+                }
+                
+                const ipData = await response.json();
+                console.log('IP API response:', ipData);
+                
+                if (ipData && ipData.latitude && ipData.longitude) {
+                    this.location = {
+                        latitude: parseFloat(ipData.latitude),
+                        longitude: parseFloat(ipData.longitude)
+                    };
+                    
+                    // For IP-based location, use browser's timezone offset
+                    // This is more reliable than trying to convert IANA timezone strings
+                    this.timezone = -new Date().getTimezoneOffset() / 60;
+                    console.log(`IP location: Using browser timezone offset ${this.timezone} hours`);
+                    
+                    if (locationEl) {
+                        const cityCountry = ipData.city && ipData.country_name ? 
+                            `${ipData.city}, ${ipData.country_name}` : 
+                            `${this.location.latitude.toFixed(2)}, ${this.location.longitude.toFixed(2)}`;
+                        locationEl.textContent = `${cityCountry} (IP Location)`;
+                    }
+                    
+                    console.log('IP-based location set successfully:', this.location);
+                    
+                } else {
+                    throw new Error(`IP API returned invalid data: ${JSON.stringify(ipData)}`);
+                }
+                
+            } catch (ipError) {
+                console.error('IP geolocation fallback failed:', ipError.message);
+                
+                // Handle specific error types
+                if (ipError.name === 'AbortError') {
+                    console.error('IP API request timed out after 10 seconds');
+                } else if (ipError.message?.includes('fetch')) {
+                    console.error('Network error accessing IP API (possibly blocked by ad-blocker or firewall)');
+                }
+                
+                // Tier 4: Default to Mecca
+                console.log('Using default location (Mecca)');
+                this.location = { latitude: 21.4225, longitude: 39.8262 };
+                this.timezone = 3;
+                
+                if (locationEl) {
+                    locationEl.innerHTML = `
+                        Mecca (default) 
+                        <button onclick="window.prayerSyncApp.showLocationModal()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px; background: #006A4E; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            Set Location
+                        </button>
+                    `;
+                }
+            }
+        }
+        
+        // Always update prayer times after location is set
+        this.updatePrayerTimes();
+    }
+
+    // Helper function to wrap geolocation with manual timeout
+    fetchPosition(options) {
+        return new Promise((resolve, reject) => {
+            // Balanced safeguard timeout (slightly longer than native timeout as backstop)
+            const safeguardTimeout = options.timeout + 2000; // 2 seconds buffer for safety
+            const timeoutId = setTimeout(() => {
+                reject(new Error(`Geolocation safeguard timeout after ${safeguardTimeout}ms`));
+            }, safeguardTimeout);
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    clearTimeout(timeoutId);
+                    resolve(pos);
+                },
+                (err) => {
+                    clearTimeout(timeoutId);
+                    // Add more detailed error information
+                    const errorDetails = {
+                        code: err.code,
+                        message: err.message,
+                        PERMISSION_DENIED: err.code === 1,
+                        POSITION_UNAVAILABLE: err.code === 2,
+                        TIMEOUT: err.code === 3
+                    };
+                    console.log('Geolocation error details:', errorDetails);
+                    reject(err);
+                },
+                {
+                    ...options,
+                    // Use the native timeout as primary mechanism
+                    timeout: options.timeout
+                }
+            );
+        });
+    }
+
+    // Helper to set location from coordinates
+    setLocationFromCoords(coords, source) {
+        this.location = {
+            latitude: coords.latitude,
+            longitude: coords.longitude
+        };
+        
+        this.timezone = -new Date().getTimezoneOffset() / 60;
+        
+        const locationEl = document.getElementById('locationText');
+        if (locationEl) {
+            locationEl.textContent = `${this.location.latitude.toFixed(2)}, ${this.location.longitude.toFixed(2)} (${source})`;
+        }
+    }
+
+    // Helper to convert timezone string to offset
+    timezoneToOffset(timezone) {
+        try {
+            // Use the most reliable method: create two dates and compare
+            const now = new Date();
+            
+            // Create formatter for the target timezone
+            const formatter = new Intl.DateTimeFormat('en', {
+                timeZone: timezone,
+                year: 'numeric',
+                month: '2-digit', 
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
             });
             
-            this.location = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
+            // Get components in target timezone
+            const parts = formatter.formatToParts(now);
+            const year = parts.find(p => p.type === 'year').value;
+            const month = parts.find(p => p.type === 'month').value;
+            const day = parts.find(p => p.type === 'day').value;
+            const hour = parts.find(p => p.type === 'hour').value;
+            const minute = parts.find(p => p.type === 'minute').value;
+            const second = parts.find(p => p.type === 'second').value;
+            
+            // Reconstruct as if it's local time
+            const localEquivalent = new Date(year, month - 1, day, hour, minute, second);
+            
+            // Calculate offset
+            const offsetMs = localEquivalent.getTime() - now.getTime();
+            const offsetHours = offsetMs / (1000 * 60 * 60);
+            
+            console.log(`Timezone ${timezone}: offset = ${offsetHours} hours`);
+            return offsetHours;
+            
+        } catch (e) {
+            console.warn('Timezone calculation failed for:', timezone, e.message);
+            
+            // Fallback to simple mapping for known timezones
+            const timezoneOffsets = {
+                'America/Vancouver': -8,
+                'America/Los_Angeles': -8,
+                'America/New_York': -5,
+                'America/Toronto': -5,
+                'America/Chicago': -6,
+                'Europe/London': 0,
+                'Europe/Paris': 1,
+                'Europe/Berlin': 1,
+                'Asia/Dubai': 4,
+                'Asia/Riyadh': 3,
+                'Asia/Tokyo': 9,
+                'Australia/Sydney': 10
             };
             
-            // Get timezone offset
-            this.timezone = -new Date().getTimezoneOffset() / 60;
+            const fallbackOffset = timezoneOffsets[timezone];
+            if (fallbackOffset !== undefined) {
+                console.log(`Using fallback offset for ${timezone}: ${fallbackOffset} hours`);
+                return fallbackOffset;
+            }
             
-            // Update location display
-            document.getElementById('location').textContent = 
-                `Lat: ${this.location.latitude.toFixed(2)}, Lon: ${this.location.longitude.toFixed(2)}`;
-        } catch (error) {
-            console.error('Error getting location:', error);
-            // Default to Mecca
-            this.location = { latitude: 21.4225, longitude: 39.8262 };
-            this.timezone = 3;
-            document.getElementById('location').textContent = 'Mecca (default)';
+            // Ultimate fallback: use browser timezone
+            const browserOffset = -new Date().getTimezoneOffset() / 60;
+            console.log(`Using browser timezone offset: ${browserOffset} hours`);
+            return browserOffset;
+        }
+    }
+
+    // Show location selection modal (user-initiated)
+    showLocationModal() {
+        const modal = document.getElementById('locationModal');
+        if (modal) {
+            modal.style.display = 'flex';
         }
     }
 
     updatePrayerTimes() {
+        console.log('=== ENTERING updatePrayerTimes ===');
+        console.log('Updating prayer times for location:', this.location, 'timezone:', this.timezone);
+        
         const today = new Date();
         this.prayerTimes = this.calculator.calculate(today, this.location, this.timezone);
+        
+        console.log('Calculated prayer times:', this.prayerTimes);
+        
+        // Check if any of the core prayer times are invalid to prevent infinite loops
+        const hasInvalidTime = this.prayerTimes && Object.values(this.prayerTimes).some(time => {
+            return !time || time === 'NaN' || time.includes('NaN') || time === '--:--';
+        });
+        
+        if (hasInvalidTime) {
+            console.error('Prayer calculation resulted in invalid times. Halting update to prevent infinite loop:', this.prayerTimes);
+            // Display placeholder times and stop execution to break the loop
+            ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(prayer => {
+                const element = document.querySelector(`[data-prayer="${prayer}"] .prayer-time`);
+                if (element) {
+                    element.textContent = 'Error';
+                }
+            });
+            return; // Exit the function to break the loop
+        }
         
         // Update UI
         ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(prayer => {
             const element = document.querySelector(`[data-prayer="${prayer}"] .prayer-time`);
-            if (element && this.prayerTimes[prayer]) {
-                element.textContent = this.prayerTimes[prayer];
+            console.log(`Updating ${prayer}:`, element, this.prayerTimes[prayer]);
+            
+            if (element) {
+                if (this.prayerTimes[prayer]) {
+                    element.textContent = this.prayerTimes[prayer];
+                } else {
+                    element.textContent = 'Calculating...';
+                    console.warn(`No time calculated for ${prayer}`);
+                }
+            } else {
+                console.warn(`Element not found for prayer: ${prayer}`);
             }
         });
         
@@ -411,7 +672,7 @@ class SalatApp {
         }
         
         // Remove all active classes
-        document.querySelectorAll('.prayer-item').forEach(item => {
+        document.querySelectorAll('.prayer-card').forEach(item => {
             item.classList.remove('active');
         });
         
@@ -432,9 +693,20 @@ class SalatApp {
     }
 
     startCountdown() {
-        setInterval(() => {
+        // Clear any existing countdown
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+        }
+        
+        this.countdownInterval = setInterval(() => {
             this.updateCountdown();
         }, 1000);
+    }
+
+    cleanup() {
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+        }
     }
 
     updateCountdown() {
@@ -463,15 +735,20 @@ class SalatApp {
         }
         
         // Update UI
-        document.getElementById('nextPrayerName').textContent = 
-            nextPrayer.charAt(0).toUpperCase() + nextPrayer.slice(1);
+        const nextPrayerEl = document.getElementById('nextPrayerName');
+        if (nextPrayerEl) {
+            nextPrayerEl.textContent = nextPrayer.charAt(0).toUpperCase() + nextPrayer.slice(1);
+        }
         
         const hours = Math.floor(minDiff / 60);
         const minutes = Math.floor(minDiff % 60);
         const seconds = 60 - now.getSeconds();
         
-        document.getElementById('countdown').textContent = 
-            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        const countdownEl = document.getElementById('countdownTimer');
+        if (countdownEl) {
+            countdownEl.textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
         
         // Check for notifications
         if (minDiff === this.notificationTime) {
@@ -608,7 +885,16 @@ class SalatApp {
     updateDate() {
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const today = new Date().toLocaleDateString('en-US', options);
-        document.getElementById('currentDate').textContent = today;
+        const dateEl = document.getElementById('todayDate');
+        if (dateEl) {
+            dateEl.textContent = today;
+        }
+        
+        // Update Hijri date if element exists
+        const hijriEl = document.getElementById('hijriDate');
+        if (hijriEl) {
+            hijriEl.textContent = 'Islamic Calendar Date';
+        }
     }
 
     // Calendar integration methods
@@ -713,6 +999,90 @@ class SalatApp {
             statusDiv.className = 'status-message error';
         }
     }
+}
+
+// Global functions for HTML onclick handlers
+function exportToday() {
+    if (window.prayerSyncApp) {
+        window.prayerSyncApp.exportPrayerTimes('today');
+    }
+}
+
+function exportWeek() {
+    if (window.prayerSyncApp) {
+        window.prayerSyncApp.exportPrayerTimes('week');
+    }
+}
+
+function exportMonth() {
+    if (window.prayerSyncApp) {
+        window.prayerSyncApp.exportPrayerTimes('month');
+    }
+}
+
+function quickDownloadCalendar() {
+    if (window.prayerSyncApp) {
+        window.prayerSyncApp.exportPrayerTimes('month');
+    }
+}
+
+function connectAppleCalendar() {
+    if (window.prayerSyncApp) {
+        window.prayerSyncApp.exportPrayerTimes('month');
+    }
+}
+
+function updateSelectedLocation() {
+    const select = document.getElementById('citySelect');
+    if (select && select.value && window.prayerSyncApp) {
+        const [lat, lon, name, timezone] = select.value.split(',');
+        window.prayerSyncApp.location = {
+            latitude: parseFloat(lat),
+            longitude: parseFloat(lon)
+        };
+        window.prayerSyncApp.timezone = timezone;
+        window.prayerSyncApp.updatePrayerTimes();
+        
+        const locationEl = document.getElementById('locationText');
+        if (locationEl) {
+            locationEl.textContent = name;
+        }
+    }
+}
+
+function openLocationModal() {
+    const modal = document.getElementById('locationModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeLocationModal() {
+    const modal = document.getElementById('locationModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function useCurrentLocation() {
+    if (window.prayerSyncApp) {
+        window.prayerSyncApp.getLocation();
+    }
+    closeLocationModal();
+}
+
+function selectCity(name, country, lat, lon, timezone) {
+    if (window.prayerSyncApp) {
+        window.prayerSyncApp.location = { latitude: lat, longitude: lon };
+        window.prayerSyncApp.timezone = timezone;
+        window.prayerSyncApp.updatePrayerTimes();
+        
+        const locationEl = document.getElementById('locationText');
+        if (locationEl) {
+            locationEl.textContent = `${name}, ${country}`;
+        }
+    }
+    closeLocationModal();
 }
 
 // App initialization moved to lazy loading in scrollToApp() function
