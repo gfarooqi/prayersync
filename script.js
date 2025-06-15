@@ -76,8 +76,39 @@ class PrayerTimesCalculator {
         const declRad = this.degToRad(decl);
         const angleRad = this.degToRad(angle);
         const cosH = -Math.tan(latRad) * Math.tan(declRad) + Math.cos(angleRad) / (Math.cos(latRad) * Math.cos(declRad));
-        if (cosH > 1 || cosH < -1) return null;
+        if (cosH > 1) return 'IMPOSSIBLE_BELOW_HORIZON';
+        if (cosH < -1) return 'IMPOSSIBLE_ABOVE_HORIZON';
         return this.radToDeg(Math.acos(cosH));
+    }
+
+    // Helper function to calculate sunrise for any date
+    getSunrise(date, coords, timezone) {
+        const jd = this.julianDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+        const decl = this.sunDeclination(jd);
+        const eqt = this.equationOfTime(jd);
+        const noon = 12 - coords.longitude / 15 - eqt / 60 + timezone;
+        
+        const sunriseHourAngle = this.sunHourAngle(coords.latitude, decl, 90.833);
+        if (typeof sunriseHourAngle !== 'number') {
+            return null; // Sunrise impossible (polar day/night)
+        }
+        
+        return noon - sunriseHourAngle / 15;
+    }
+
+    // Helper function to calculate sunset for any date
+    getSunset(date, coords, timezone) {
+        const jd = this.julianDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+        const decl = this.sunDeclination(jd);
+        const eqt = this.equationOfTime(jd);
+        const noon = 12 - coords.longitude / 15 - eqt / 60 + timezone;
+        
+        const sunriseHourAngle = this.sunHourAngle(coords.latitude, decl, 90.833);
+        if (typeof sunriseHourAngle !== 'number') {
+            return null; // Sunset impossible (polar day/night)
+        }
+        
+        return noon + sunriseHourAngle / 15;
     }
 
     // Calculate prayer times
@@ -100,15 +131,30 @@ class PrayerTimesCalculator {
         
         // Fajr
         const fajrHourAngle = this.sunHourAngle(coords.latitude, decl, 90 + fajrAngle);
-        if (fajrHourAngle !== null) {
+        if (fajrHourAngle === 'IMPOSSIBLE_BELOW_HORIZON') {
+            // High-latitude method: One-Seventh Night rule
+            const yesterday = new Date(date);
+            yesterday.setDate(date.getDate() - 1);
+            const sunsetYesterday = this.getSunset(yesterday, coords, timezone);
+            const sunriseToday = this.getSunrise(date, coords, timezone);
+            
+            if (sunsetYesterday !== null && sunriseToday !== null) {
+                // Calculate night duration (handle day boundary)
+                let nightDuration = sunriseToday - sunsetYesterday;
+                if (nightDuration <= 0) nightDuration += 24; // Cross midnight
+                times.fajr = sunriseToday - (nightDuration / 7); // 6/7 of night
+            } else {
+                times.fajr = noon - 1.5; // Last resort fallback
+            }
+        } else if (typeof fajrHourAngle === 'number') {
             times.fajr = noon - fajrHourAngle / 15;
         } else {
-            times.fajr = noon - 1.5; // Fallback: 1.5 hours before noon
+            times.fajr = noon - 1.5; // Fallback for other errors
         }
         
         // Sunrise
         const sunriseHourAngle = this.sunHourAngle(coords.latitude, decl, 90.833);
-        if (sunriseHourAngle !== null) {
+        if (typeof sunriseHourAngle === 'number') {
             times.sunrise = noon - sunriseHourAngle / 15;
             times.maghrib = noon + sunriseHourAngle / 15; // Maghrib uses same angle as sunrise
         } else {
@@ -122,7 +168,7 @@ class PrayerTimesCalculator {
         // Asr (Shafi method)
         const asrAngle = this.radToDeg(Math.atan(1 + Math.tan(this.degToRad(Math.abs(coords.latitude - decl)))));
         const asrHourAngle = this.sunHourAngle(coords.latitude, decl, 90 - asrAngle);
-        if (asrHourAngle !== null) {
+        if (typeof asrHourAngle === 'number') {
             times.asr = noon + asrHourAngle / 15;
         } else {
             times.asr = noon + 2; // Fallback: 2 hours after noon
@@ -130,10 +176,25 @@ class PrayerTimesCalculator {
         
         // Isha
         const ishaHourAngle = this.sunHourAngle(coords.latitude, decl, 90 + ishaAngle);
-        if (ishaHourAngle !== null) {
+        if (ishaHourAngle === 'IMPOSSIBLE_BELOW_HORIZON') {
+            // High-latitude method: One-Seventh Night rule
+            const tomorrow = new Date(date);
+            tomorrow.setDate(date.getDate() + 1);
+            const sunsetToday = this.getSunset(date, coords, timezone);
+            const sunriseTomorrow = this.getSunrise(tomorrow, coords, timezone);
+            
+            if (sunsetToday !== null && sunriseTomorrow !== null) {
+                // Calculate night duration (handle day boundary)
+                let nightDuration = sunriseTomorrow - sunsetToday;
+                if (nightDuration <= 0) nightDuration += 24; // Cross midnight
+                times.isha = sunsetToday + (nightDuration / 7); // 1/7 of night
+            } else {
+                times.isha = times.maghrib + 1.5; // Last resort fallback
+            }
+        } else if (typeof ishaHourAngle === 'number') {
             times.isha = noon + ishaHourAngle / 15;
         } else {
-            times.isha = times.maghrib + 1.5; // Fallback: 1.5 hours after maghrib
+            times.isha = times.maghrib + 1.5; // Fallback for other errors
         }
         
         // Handle Isha time for high latitudes
