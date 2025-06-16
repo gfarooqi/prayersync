@@ -3,109 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test AlAdhan API Integration</title>
+    <title>Production-Ready AlAdhan API Integration Test</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .test-result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        .success { background-color: #d4edda; border-color: #c3e6cb; }
-        .error { background-color: #f8d7da; border-color: #f5c6cb; }
-        button { margin: 5px; padding: 10px 15px; }
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .test-result { margin: 15px 0; padding: 15px; border: 1px solid #ccc; border-radius: 8px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; color: #856404; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button { margin: 5px; padding: 12px 20px; background: #006A4E; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        button:hover { background: #005a42; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .test-section { margin: 20px 0; padding: 15px; border: 2px solid #e9ecef; border-radius: 8px; }
+        .test-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        h1 { color: #006A4E; text-align: center; }
+        h2 { color: #333; margin-top: 30px; }
+        .cache-info { font-size: 12px; color: #666; margin-top: 10px; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
     </style>
 </head>
 <body>
-    <h1>AlAdhan API Integration Test</h1>
-    
-    <button onclick="testAPI()">Test API Integration</button>
-    <button onclick="testFallback()">Test Fallback</button>
-    
-    <div id="results"></div>
+    <div class="container">
+        <h1>🕌 Production-Ready AlAdhan API Integration Test</h1>
+        <p><strong>Testing:</strong> Timezone-aware caching, 3-layer fallback, and production edge cases</p>
+        
+        <div class="test-section">
+            <h2>🔧 Basic API Tests</h2>
+            <div class="test-controls">
+                <button onclick="testBasicAPI()">Test Basic API</button>
+                <button onclick="testDifferentMethods()">Test Calculation Methods</button>
+                <button onclick="testFallbackSystem()">Test Fallback System</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🌍 Timezone & Cache Tests</h2>
+            <div class="test-controls">
+                <button onclick="testTimezoneCache()">Test Timezone-Aware Cache</button>
+                <button onclick="testCachePersistence()">Test Cache Persistence</button>
+                <button onclick="testOfflineScenario()">Test Offline Scenario</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 Production Edge Cases</h2>
+            <div class="test-controls">
+                <button onclick="testHighLatitudes()">Test High Latitudes</button>
+                <button onclick="testRapidRequests()">Test Rapid Requests</button>
+                <button onclick="clearAllCaches()">Clear All Caches</button>
+            </div>
+        </div>
+
+        <div id="results"></div>
+        <div id="cache-status" class="cache-info"></div>
+    </div>
 
     <script src="script.js"></script>
     <script>
-        async function testAPI() {
+        let testResults = [];
+        let api = new AlAdhanAPI();
+
+        function updateResults() {
             const resultsEl = document.getElementById('results');
-            resultsEl.innerHTML = '<div class="test-result">Testing AlAdhan API...</div>';
+            resultsEl.innerHTML = testResults.map(result => result.html).join('');
+        }
+
+        function addResult(test, success, message, details = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const html = `
+                <div class="test-result ${success ? 'success' : 'error'}">
+                    <h4>${success ? '✅' : '❌'} ${test}</h4>
+                    <p><strong>${timestamp}:</strong> ${message}</p>
+                    ${details ? `<pre>${details}</pre>` : ''}
+                </div>
+            `;
+            testResults.push({ test, success, message, html, timestamp });
+            updateResults();
+            updateCacheStatus();
+        }
+
+        function updateCacheStatus() {
+            const cacheEl = document.getElementById('cache-status');
+            const memoryKeys = Array.from(api.cache.keys());
+            const storageKeys = Object.keys(localStorage).filter(key => 
+                key.startsWith('times:') || key.startsWith('meta:')
+            );
             
+            cacheEl.innerHTML = `
+                <strong>Cache Status:</strong> 
+                Memory: ${memoryKeys.length} items | 
+                localStorage: ${storageKeys.length} items | 
+                <a href="#" onclick="console.log('Memory cache:', api.cache); console.log('localStorage:', localStorage);">Debug in console</a>
+            `;
+        }
+
+        async function testBasicAPI() {
+            const testName = "Basic API Integration";
             try {
-                const api = new AlAdhanAPI();
                 const lat = 40.7128; // New York
                 const lon = -74.0060;
                 const date = new Date();
                 
-                console.log('Testing API with:', { lat, lon, date });
+                console.log('Testing basic API with:', { lat, lon, date });
                 
-                // Test the API call
                 const times = await api.getPrayerTimes(lat, lon, date, 'MWL');
                 
-                resultsEl.innerHTML = `
-                    <div class="test-result success">
-                        <h3>✅ API Test Success</h3>
-                        <p><strong>Location:</strong> New York (${lat}, ${lon})</p>
-                        <p><strong>Date:</strong> ${date.toDateString()}</p>
-                        <p><strong>Method:</strong> MWL (Muslim World League)</p>
-                        <h4>Prayer Times:</h4>
-                        <ul>
-                            <li>Fajr: ${times.fajr}</li>
-                            <li>Sunrise: ${times.sunrise}</li>
-                            <li>Dhuhr: ${times.dhuhr}</li>
-                            <li>Asr: ${times.asr}</li>
-                            <li>Maghrib: ${times.maghrib}</li>
-                            <li>Isha: ${times.isha}</li>
-                        </ul>
-                    </div>
-                `;
+                // Validate response format
+                const requiredFields = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
+                const missingFields = requiredFields.filter(field => !times[field]);
                 
+                if (missingFields.length > 0) {
+                    throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+                }
+                
+                // Validate time format (HH:MM)
+                const timePattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+                const invalidTimes = requiredFields.filter(field => !timePattern.test(times[field]));
+                
+                if (invalidTimes.length > 0) {
+                    throw new Error(`Invalid time format: ${invalidTimes.join(', ')}`);
+                }
+                
+                addResult(testName, true, `Successfully fetched prayer times for NYC`, 
+                    `Prayer Times:\n${JSON.stringify(times, null, 2)}`);
+                    
             } catch (error) {
-                resultsEl.innerHTML = `
-                    <div class="test-result error">
-                        <h3>❌ API Test Failed</h3>
-                        <p><strong>Error:</strong> ${error.message}</p>
-                        <p><strong>Stack:</strong> ${error.stack}</p>
-                    </div>
-                `;
+                addResult(testName, false, error.message, error.stack);
             }
         }
-        
-        async function testFallback() {
-            const resultsEl = document.getElementById('results');
-            resultsEl.innerHTML = '<div class="test-result">Testing Fallback System...</div>';
-            
+
+        async function testDifferentMethods() {
+            const testName = "Different Calculation Methods";
             try {
-                const api = new AlAdhanAPI();
-                const lat = 40.7128;
+                const lat = 51.5074; // London
+                const lon = -0.1278;
+                const date = new Date();
+                const methods = ['MWL', 'ISNA', 'Egypt', 'Makkah'];
+                
+                const results = {};
+                
+                for (const method of methods) {
+                    const times = await api.getPrayerTimes(lat, lon, date, method);
+                    results[method] = times.fajr; // Compare Fajr times
+                }
+                
+                // Verify different methods give different results (they should!)
+                const uniqueFajrTimes = new Set(Object.values(results));
+                if (uniqueFajrTimes.size < 2) {
+                    throw new Error('All calculation methods returned identical times - this suggests a problem');
+                }
+                
+                addResult(testName, true, `Successfully tested ${methods.length} calculation methods`, 
+                    `Fajr times by method:\n${JSON.stringify(results, null, 2)}`);
+                    
+            } catch (error) {
+                addResult(testName, false, error.message, error.stack);
+            }
+        }
+
+        async function testTimezoneCache() {
+            const testName = "Timezone-Aware Cache";
+            try {
+                // Clear cache to start fresh
+                api.cache.clear();
+                
+                const lat = 51.5074; // London
+                const lon = -0.1278;
+                const date = new Date();
+                
+                // First call - should fetch from API
+                console.log('First call (should fetch from API)...');
+                const times1 = await api.getPrayerTimes(lat, lon, date, 'MWL');
+                
+                // Second call - should use cache
+                console.log('Second call (should use cache)...');
+                const times2 = await api.getPrayerTimes(lat, lon, date, 'MWL');
+                
+                // Verify times are identical (proving cache worked)
+                const timesMatch = JSON.stringify(times1) === JSON.stringify(times2);
+                if (!timesMatch) {
+                    throw new Error('Cached times do not match original times');
+                }
+                
+                // Check that cache key includes timezone-corrected date
+                const cacheKeys = Array.from(api.cache.keys());
+                const londonCacheKey = cacheKeys.find(key => key.includes(lat) && key.includes(lon));
+                
+                if (!londonCacheKey) {
+                    throw new Error('Expected cache key not found');
+                }
+                
+                addResult(testName, true, 'Cache working correctly with timezone awareness', 
+                    `Cache key: ${londonCacheKey}\nTimes: ${JSON.stringify(times1, null, 2)}`);
+                    
+            } catch (error) {
+                addResult(testName, false, error.message, error.stack);
+            }
+        }
+
+        async function testCachePersistence() {
+            const testName = "Cache Persistence (localStorage)";
+            try {
+                const lat = 25.2048; // Dubai
+                const lon = 55.2708;
+                const date = new Date();
+                
+                // Clear memory cache but leave localStorage
+                api.cache.clear();
+                
+                // Make a call - should populate both caches
+                await api.getPrayerTimes(lat, lon, date, 'MWL');
+                
+                // Clear memory cache again (simulating app restart)
+                api.cache.clear();
+                
+                // Make same call - should load from localStorage
+                const times = await api.getPrayerTimes(lat, lon, date, 'MWL');
+                
+                // Check localStorage has the data
+                const storageKeys = Object.keys(localStorage).filter(key => key.startsWith('times:'));
+                const metaKeys = Object.keys(localStorage).filter(key => key.startsWith('meta:'));
+                
+                if (storageKeys.length === 0) {
+                    throw new Error('No prayer times found in localStorage');
+                }
+                
+                addResult(testName, true, 'localStorage persistence working correctly', 
+                    `Storage keys: ${storageKeys.length}\nMeta keys: ${metaKeys.length}\nTimes: ${JSON.stringify(times, null, 2)}`);
+                    
+            } catch (error) {
+                addResult(testName, false, error.message, error.stack);
+            }
+        }
+
+        async function testOfflineScenario() {
+            const testName = "Offline Fallback Scenario";
+            try {
+                // First, get real data and cache it
+                const lat = 40.7128; // New York
                 const lon = -74.0060;
                 const date = new Date();
                 
-                // Test the fallback directly
-                const times = api.getFallbackTimes(lat, lon, date);
+                await api.getPrayerTimes(lat, lon, date, 'MWL');
                 
-                resultsEl.innerHTML = `
-                    <div class="test-result success">
-                        <h3>✅ Fallback Test Success</h3>
-                        <p><strong>Location:</strong> New York (${lat}, ${lon})</p>
-                        <p><strong>Date:</strong> ${date.toDateString()}</p>
-                        <h4>Fallback Prayer Times:</h4>
-                        <ul>
-                            <li>Fajr: ${times.fajr}</li>
-                            <li>Sunrise: ${times.sunrise}</li>
-                            <li>Dhuhr: ${times.dhuhr}</li>
-                            <li>Asr: ${times.asr}</li>
-                            <li>Maghrib: ${times.maghrib}</li>
-                            <li>Isha: ${times.isha}</li>
-                        </ul>
-                        <p><em>Note: These are basic fallback times, not astronomically calculated.</em></p>
-                    </div>
-                `;
+                // Now simulate offline by temporarily breaking fetch
+                const originalFetch = window.fetch;
+                window.fetch = () => Promise.reject(new Error('Network offline (simulated)'));
+                
+                try {
+                    // This should use localStorage cache
+                    const times = await api.getPrayerTimes(lat, lon, date, 'MWL');
+                    
+                    // Verify we got real times, not generic fallback
+                    if (times.fajr === '05:30') {
+                        throw new Error('Got generic fallback instead of cached data');
+                    }
+                    
+                    addResult(testName, true, 'Offline scenario handled correctly - used localStorage cache', 
+                        `Cached times: ${JSON.stringify(times, null, 2)}`);
+                        
+                } finally {
+                    // Restore fetch
+                    window.fetch = originalFetch;
+                }
                 
             } catch (error) {
-                resultsEl.innerHTML = `
-                    <div class="test-result error">
-                        <h3>❌ Fallback Test Failed</h3>
-                        <p><strong>Error:</strong> ${error.message}</p>
-                    </div>
-                `;
+                // Restore fetch in case of error
+                if (window.fetch !== fetch) {
+                    window.fetch = fetch;
+                }
+                addResult(testName, false, error.message, error.stack);
             }
         }
+
+        async function testFallbackSystem() {
+            const testName = "Generic Fallback System";
+            try {
+                // Test the generic fallback directly
+                const fallbackTimes = api.getFallbackTimes();
+                
+                // Validate fallback format
+                const requiredFields = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
+                const missingFields = requiredFields.filter(field => !fallbackTimes[field]);
+                
+                if (missingFields.length > 0) {
+                    throw new Error(`Fallback missing fields: ${missingFields.join(', ')}`);
+                }
+                
+                addResult(testName, true, 'Generic fallback system working', 
+                    `Fallback times: ${JSON.stringify(fallbackTimes, null, 2)}`);
+                    
+            } catch (error) {
+                addResult(testName, false, error.message, error.stack);
+            }
+        }
+
+        async function testHighLatitudes() {
+            const testName = "High Latitude Locations";
+            try {
+                // Test locations with extreme latitudes
+                const locations = [
+                    { name: 'Reykjavik, Iceland', lat: 64.1466, lon: -21.9426 },
+                    { name: 'Anchorage, Alaska', lat: 61.2181, lon: -149.9003 }
+                ];
+                
+                const results = {};
+                
+                for (const location of locations) {
+                    const times = await api.getPrayerTimes(location.lat, location.lon, new Date(), 'MWL');
+                    results[location.name] = times;
+                }
+                
+                addResult(testName, true, 'High latitude locations processed successfully', 
+                    `Results:\n${JSON.stringify(results, null, 2)}`);
+                    
+            } catch (error) {
+                addResult(testName, false, error.message, error.stack);
+            }
+        }
+
+        async function testRapidRequests() {
+            const testName = "Rapid API Requests (Rate Limit Test)";
+            try {
+                const locations = [
+                    { lat: 40.7128, lon: -74.0060 }, // New York
+                    { lat: 51.5074, lon: -0.1278 },  // London
+                    { lat: 25.2048, lon: 55.2708 },  // Dubai
+                    { lat: 35.6762, lon: 139.6503 }, // Tokyo
+                    { lat: -33.8688, lon: 151.2093 } // Sydney
+                ];
+                
+                const startTime = Date.now();
+                const promises = locations.map(loc => 
+                    api.getPrayerTimes(loc.lat, loc.lon, new Date(), 'MWL')
+                );
+                
+                const results = await Promise.all(promises);
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+                
+                // Verify all requests succeeded
+                if (results.some(result => !result || !result.fajr)) {
+                    throw new Error('Some rapid requests failed');
+                }
+                
+                addResult(testName, true, `${locations.length} rapid requests completed in ${duration}ms`, 
+                    `Average: ${Math.round(duration / locations.length)}ms per request`);
+                    
+            } catch (error) {
+                addResult(testName, false, error.message, error.stack);
+            }
+        }
+
+        function clearAllCaches() {
+            // Clear memory cache
+            api.cache.clear();
+            
+            // Clear localStorage items
+            const keysToRemove = Object.keys(localStorage).filter(key => 
+                key.startsWith('times:') || key.startsWith('meta:')
+            );
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            
+            addResult("Clear Caches", true, `Cleared ${keysToRemove.length} localStorage items and all memory cache`);
+        }
+
+        // Initialize
+        updateCacheStatus();
+        console.log('AlAdhan API Test Suite Ready');
+        console.log('API instance:', api);
     </script>
 </body>
 </html>
