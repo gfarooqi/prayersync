@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test AlAdhan API Integration</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { margin: 5px; padding: 10px 15px; }
+    </style>
+</head>
+<body>
+    <h1>AlAdhan API Integration Test</h1>
+    
+    <button onclick="testAPI()">Test API Integration</button>
+    <button onclick="testFallback()">Test Fallback</button>
+    
+    <div id="results"></div>
+
+    <script src="script.js"></script>
+    <script>
+        async function testAPI() {
+            const resultsEl = document.getElementById('results');
+            resultsEl.innerHTML = '<div class="test-result">Testing AlAdhan API...</div>';
+            
+            try {
+                const api = new AlAdhanAPI();
+                const lat = 40.7128; // New York
+                const lon = -74.0060;
+                const date = new Date();
+                
+                console.log('Testing API with:', { lat, lon, date });
+                
+                // Test the API call
+                const times = await api.getPrayerTimes(lat, lon, date, 'MWL');
+                
+                resultsEl.innerHTML = `
+                    <div class="test-result success">
+                        <h3>✅ API Test Success</h3>
+                        <p><strong>Location:</strong> New York (${lat}, ${lon})</p>
+                        <p><strong>Date:</strong> ${date.toDateString()}</p>
+                        <p><strong>Method:</strong> MWL (Muslim World League)</p>
+                        <h4>Prayer Times:</h4>
+                        <ul>
+                            <li>Fajr: ${times.fajr}</li>
+                            <li>Sunrise: ${times.sunrise}</li>
+                            <li>Dhuhr: ${times.dhuhr}</li>
+                            <li>Asr: ${times.asr}</li>
+                            <li>Maghrib: ${times.maghrib}</li>
+                            <li>Isha: ${times.isha}</li>
+                        </ul>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultsEl.innerHTML = `
+                    <div class="test-result error">
+                        <h3>❌ API Test Failed</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Stack:</strong> ${error.stack}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function testFallback() {
+            const resultsEl = document.getElementById('results');
+            resultsEl.innerHTML = '<div class="test-result">Testing Fallback System...</div>';
+            
+            try {
+                const api = new AlAdhanAPI();
+                const lat = 40.7128;
+                const lon = -74.0060;
+                const date = new Date();
+                
+                // Test the fallback directly
+                const times = api.getFallbackTimes(lat, lon, date);
+                
+                resultsEl.innerHTML = `
+                    <div class="test-result success">
+                        <h3>✅ Fallback Test Success</h3>
+                        <p><strong>Location:</strong> New York (${lat}, ${lon})</p>
+                        <p><strong>Date:</strong> ${date.toDateString()}</p>
+                        <h4>Fallback Prayer Times:</h4>
+                        <ul>
+                            <li>Fajr: ${times.fajr}</li>
+                            <li>Sunrise: ${times.sunrise}</li>
+                            <li>Dhuhr: ${times.dhuhr}</li>
+                            <li>Asr: ${times.asr}</li>
+                            <li>Maghrib: ${times.maghrib}</li>
+                            <li>Isha: ${times.isha}</li>
+                        </ul>
+                        <p><em>Note: These are basic fallback times, not astronomically calculated.</em></p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultsEl.innerHTML = `
+                    <div class="test-result error">
+                        <h3>❌ Fallback Test Failed</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

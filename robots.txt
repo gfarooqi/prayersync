@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://prayersync.app/sitemap.xml
+
+# Allow all prayer times pages
+Allow: /prayer-times-*
+Allow: /prayer-room-*
+Allow: /business-travel-prayer
+Allow: /meeting-prayer-conflict
+Allow: /workplace-prayer-setup
+Allow: /ramadan-work-schedule
+
+# Block admin/development paths
+Disallow: /api/
+Disallow: /_next/
+Disallow: /_vercel/
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

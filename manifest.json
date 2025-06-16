@@ -4,8 +4,8 @@
   "description": "Never miss a prayer as a busy professional. Automatic calendar sync and smart conflict detection.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1e3a5f",
+  "background_color": "#F8F5F2",
+  "theme_color": "#006A4E",
   "orientation": "portrait",
   "icons": [
     {

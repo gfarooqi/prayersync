@@ -49,12 +49,28 @@
   ],
   "rewrites": [
     {
-      "source": "/prayer-times-(.*)",
-      "destination": "/pages/prayer-times-$1.html"
+      "source": "/prayer-times-(.+)",
+      "destination": "/pages/prayer-times-$1"
     },
     {
-      "source": "/prayer-room-(.*)-airport",
-      "destination": "/pages/prayer-room-$1-airport.html"
+      "source": "/prayer-room-(.+)-airport",
+      "destination": "/pages/prayer-room-$1-airport"
+    },
+    {
+      "source": "/business-travel-prayer",
+      "destination": "/pages/business-travel-prayer"
+    },
+    {
+      "source": "/meeting-prayer-conflict",
+      "destination": "/pages/meeting-prayer-conflict"
+    },
+    {
+      "source": "/workplace-prayer-setup",
+      "destination": "/pages/workplace-prayer-setup"
+    },
+    {
+      "source": "/ramadan-work-schedule",
+      "destination": "/pages/ramadan-work-schedule"
     }
   ],
   "redirects": [

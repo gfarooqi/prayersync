@@ -12,7 +12,19 @@
       "WebFetch(domain:prayersync.vercel.app)",
       "mcp__puppeteer__puppeteer_navigate",
       "Bash(grep:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "mcp__zen_1__codereview",
+      "Bash(touch:*)",
+      "Bash(ls:*)",
+      "Bash(npx vercel:*)",
+      "Bash(curl:*)",
+      "Bash(nslookup:*)",
+      "mcp__vercel_1__check_deployment_status",
+      "mcp__zen_1__analyze",
+      "Bash(git add:*)",
+      "WebFetch(domain:aladhan.com)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }

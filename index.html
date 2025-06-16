@@ -13,7 +13,7 @@
     <meta property="og:title" content="PrayerSync - Prayer Times Calendar Integration for Muslim Professionals">
     <meta property="og:description" content="Never miss a prayer or double-book a meeting. Automatic prayer times in your business calendar.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://prayersync.com">
+    <meta property="og:url" content="https://prayersync.app">
     
     <!-- Preload Critical Resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +22,7 @@
     
     <!-- Vercel Analytics -->
     <script defer src="https://va.vercel-scripts.com/v1/script.js" data-api="/_vercel/insights/view"></script>
+    <!-- Cache buster: 2025-06-14-15:47 -->
 </head>
 <body>
     <!-- Landing Page Wrapper -->
@@ -583,8 +584,13 @@
             document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
             
             // Initialize the app only when user navigates to it
-            if (!window.app) {
-                window.app = new PrayerSync();
+            console.log('scrollToApp: About to check for window.prayerSyncApp...', typeof window.prayerSyncApp);
+            if (!window.prayerSyncApp) {
+                console.log('scrollToApp: Creating new PrayerSync instance...');
+                window.prayerSyncApp = new PrayerSync();
+                console.log('scrollToApp: PrayerSync created successfully:', typeof window.prayerSyncApp);
+            } else {
+                console.log('scrollToApp: PrayerSync already exists');
             }
         }
 
@@ -644,21 +650,7 @@
         });
     </script>
     
-    <!-- JavaScript - Deferred for better performance -->
-    <script src="app.js" defer></script>
-    <script src="simple-calendar.js" defer></script>
-    <script src="init-backend.js" defer></script>
-    
-    <!-- Calendar Integration -->
-    <script type="module" src="calendar-integration/app-integration.js" defer></script>
-    
-    <!-- Location Awareness Integration -->
-    <script type="module" src="location-awareness/app-location-integration.js" defer></script>
-    
-    <!-- Conflict Detection Integration -->
-    <script type="module" src="conflict-detection/app-conflict-integration.js" defer></script>
-    
-    <!-- Qibla Compass Integration -->
-    <script type="module" src="qibla-compass/app-qibla-integration.js" defer></script>
+    <!-- Main JavaScript - Contains all app functionality -->
+    <script src="script.js" defer></script>
 </body>
 </html>
