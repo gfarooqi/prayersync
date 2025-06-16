@@ -201,7 +201,7 @@ class CalendarIntegration {
         
         let icalEvent = [
             'BEGIN:VEVENT',
-            `UID:prayersync-${prayer}-${formatDateWithTZ(startDate)}@prayersync.com`,
+            `UID:prayersync-${prayer}-${formatDateWithTZ(startDate)}@prayersync.app`,
             `DTSTAMP:${formatDateWithTZ(new Date())}`,
             `DTSTART;TZID=${this.timezone}:${formatDateWithTZ(startDate)}`,
             `DTEND;TZID=${this.timezone}:${formatDateWithTZ(endDate)}`,
