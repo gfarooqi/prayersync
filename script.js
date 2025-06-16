@@ -1,7 +1,7 @@
 // AlAdhan API Prayer Times Service with timezone-aware caching and 3-layer fallback
 class AlAdhanAPI {
     constructor() {
-        this.baseUrl = 'http://api.aladhan.com/v1';
+        this.baseUrl = 'https://api.aladhan.com/v1';
         this.methods = {
             'ISNA': 2,      // Islamic Society of North America
             'MWL': 3,       // Muslim World League (default)
@@ -155,6 +155,12 @@ class AlAdhanAPI {
             sunrise: '06:45',
             dhuhr: '12:00',
             asr: '15:30',
+            maghrib: '17:15',
+            isha: '18:45'
+        };
+    }
+}
+
 class CalendarIntegration {
     constructor() {
         this.eventDuration = 30;
@@ -618,7 +624,7 @@ class PrayerSync {
         console.log('Updating prayer times for location:', this.location, 'timezone:', this.timezone);
         
         const today = new Date();
-        this.prayerTimes = await this.calculator.calculate(today, this.location, this.timezone);
+        this.prayerTimes = await this.calculator.getPrayerTimes(this.location.latitude, this.location.longitude, today, this.calculationMethod || 'MWL');
         
         console.log('Calculated prayer times:', this.prayerTimes);
         
@@ -915,7 +921,7 @@ class PrayerSync {
         
         // Generate events for each day
         for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-            const dayPrayerTimes = await this.calculator.calculate(new Date(d), this.location, this.timezone);
+            const dayPrayerTimes = await this.calculator.getPrayerTimes(this.location.latitude, this.location.longitude, new Date(d), this.calculationMethod || 'MWL');
             
             ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(prayer => {
                 events.push({
@@ -1085,6 +1091,21 @@ async function selectCity(name, country, lat, lon, timezone) {
 
 // App initialization moved to lazy loading in scrollToApp() function
 // This improves landing page performance and prevents unnecessary calculations
+
+// Function to initialize the app when user clicks "Try Free App"
+function scrollToApp() {
+    // Scroll to app section
+    const appSection = document.getElementById('app');
+    if (appSection) {
+        appSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Initialize the app if not already initialized
+    if (!window.prayerSyncApp) {
+        console.log('Initializing PrayerSync app...');
+        window.prayerSyncApp = new PrayerSync();
+    }
+}
 
 // Register service worker for offline functionality
 if ('serviceWorker' in navigator) {
