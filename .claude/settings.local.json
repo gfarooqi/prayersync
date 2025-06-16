@@ -24,7 +24,8 @@
       "Bash(git add:*)",
       "WebFetch(domain:aladhan.com)",
       "Bash(mkdir:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

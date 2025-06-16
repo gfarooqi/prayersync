@@ -55,7 +55,7 @@ class AlAdhanAPI {
         // If no metadata is cached, fetch it (only happens ONCE per location)
         try {
             const todayStr = new Date().toLocaleDateString('en-CA');
-            const url = `${this.baseUrl}/timings/${todayStr}?latitude=${latitude}&longitude=${longitude}&method=${this.defaultMethod}`;
+            const url = `/api/getPrayerTimes?latitude=${latitude}&longitude=${longitude}&date=${todayStr}&method=${this.defaultMethod}`;
             const response = await fetch(url);
             if (!response.ok) return null;
             const data = await response.json();
@@ -100,9 +100,9 @@ class AlAdhanAPI {
             return storageCached.data;
         }
 
-        // Layer 3: Fetch from API or use generic fallback
+        // Layer 3: Fetch from API via our Vercel proxy (solves CORS issue)
         try {
-            const url = `${this.baseUrl}/timings/${dateStr}?latitude=${latitude}&longitude=${longitude}&method=${methodId}`;
+            const url = `/api/getPrayerTimes?latitude=${latitude}&longitude=${longitude}&date=${dateStr}&method=${methodId}`;
             const response = await fetch(url);
             if (!response.ok) throw new Error(`API error: ${response.status}`);
             
