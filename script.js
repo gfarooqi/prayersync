@@ -1,4 +1,4 @@
-// AlAdhan API Prayer Times Service with timezone-aware caching and 3-layer fallback
+// AlAdhan API Prayer Times Service with timezone-aware caching and 3-layer fallback (v2.0)
 class AlAdhanAPI {
     constructor() {
         this.baseUrl = 'https://api.aladhan.com/v1';
