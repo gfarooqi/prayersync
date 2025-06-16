@@ -51,6 +51,8 @@
             <div class="test-controls">
                 <button onclick="testHighLatitudes()">Test High Latitudes</button>
                 <button onclick="testRapidRequests()">Test Rapid Requests</button>
+                <button onclick="testMetadataFailure()">Test Metadata Failure</button>
+                <button onclick="testLocalStorageUnavailable()">Test Incognito Mode</button>
                 <button onclick="clearAllCaches()">Clear All Caches</button>
             </div>
         </div>
@@ -351,6 +353,95 @@
                 addResult(testName, true, `${locations.length} rapid requests completed in ${duration}ms`, 
                     `Average: ${Math.round(duration / locations.length)}ms per request`);
                     
+            } catch (error) {
+                addResult(testName, false, error.message, error.stack);
+            }
+        }
+
+        async function testMetadataFailure() {
+            const testName = "Metadata Fetch Failure";
+            try {
+                // Create fresh API instance  
+                const testAPI = new AlAdhanAPI();
+                
+                // Clear any existing metadata
+                const metaKeys = Object.keys(localStorage).filter(key => key.startsWith('meta:'));
+                metaKeys.forEach(key => localStorage.removeItem(key));
+                
+                // Mock fetch to fail on metadata requests but succeed on prayer times
+                const originalFetch = window.fetch;
+                let callCount = 0;
+                window.fetch = (url) => {
+                    callCount++;
+                    if (callCount === 1) {
+                        // First call (metadata) fails
+                        return Promise.reject(new Error('Metadata fetch failed (simulated)'));
+                    } else {
+                        // Second call (prayer times) succeeds - use original fetch
+                        return originalFetch(url);
+                    }
+                };
+                
+                try {
+                    const lat = 25.2048; // Dubai
+                    const lon = 55.2708;
+                    const times = await testAPI.getPrayerTimes(lat, lon, new Date(), 'MWL');
+                    
+                    // Should still get valid times using fallback timezone logic
+                    if (!times.fajr || times.fajr === '05:30') {
+                        throw new Error('Should get real API times despite metadata failure');
+                    }
+                    
+                    addResult(testName, true, 'Handled metadata failure gracefully - used browser timezone fallback', 
+                        `Prayer times: ${JSON.stringify(times, null, 2)}`);
+                        
+                } finally {
+                    window.fetch = originalFetch;
+                }
+                
+            } catch (error) {
+                addResult(testName, false, error.message, error.stack);
+            }
+        }
+
+        async function testLocalStorageUnavailable() {
+            const testName = "localStorage Unavailable (Incognito Mode)";
+            try {
+                // Mock localStorage to throw errors (simulating incognito mode)
+                const originalLocalStorage = window.localStorage;
+                const mockStorage = {
+                    getItem: () => { throw new Error('localStorage unavailable in incognito mode'); },
+                    setItem: () => { throw new Error('localStorage unavailable in incognito mode'); },
+                    removeItem: () => { throw new Error('localStorage unavailable in incognito mode'); }
+                };
+                
+                Object.defineProperty(window, 'localStorage', { 
+                    value: mockStorage, 
+                    writable: true 
+                });
+                
+                try {
+                    const testAPI = new AlAdhanAPI();
+                    const lat = 40.7128; // New York
+                    const lon = -74.0060;
+                    const times = await testAPI.getPrayerTimes(lat, lon, new Date(), 'MWL');
+                    
+                    // Should still work, just without localStorage caching
+                    if (!times.fajr || times.fajr === '05:30') {
+                        throw new Error('Should get real API times despite localStorage failure');
+                    }
+                    
+                    addResult(testName, true, 'Handled localStorage unavailability gracefully', 
+                        `Prayer times: ${JSON.stringify(times, null, 2)}`);
+                        
+                } finally {
+                    // Restore localStorage
+                    Object.defineProperty(window, 'localStorage', { 
+                        value: originalLocalStorage, 
+                        writable: true 
+                    });
+                }
+                
             } catch (error) {
                 addResult(testName, false, error.message, error.stack);
             }
