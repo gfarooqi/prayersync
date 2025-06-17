@@ -122,10 +122,21 @@ class AlAdhanAPI {
             }
 
             console.log(`Fresh API data cached for ${dateStr}`);
+            
+            // Clear any previous error notifications since API is working
+            this.clearNotification();
+            
             return times;
 
         } catch (error) {
             console.warn('AlAdhan API failed, using generic fallback:', error);
+            
+            // Show user-visible notification about API failure
+            this.showNotification(
+                'Could not retrieve live prayer times. Showing approximate fallback times. Please check your internet connection.',
+                'warning'
+            );
+            
             return this.getFallbackTimes();
         }
     }
@@ -158,6 +169,48 @@ class AlAdhanAPI {
             maghrib: '17:15',
             isha: '18:45'
         };
+    }
+
+    // Show user notification for API errors and important messages
+    showNotification(message, level = 'warning') {
+        const banner = document.getElementById('notification-banner');
+        const messageEl = banner.querySelector('.notification-message');
+        const iconEl = banner.querySelector('.notification-icon');
+        
+        if (!banner || !messageEl) {
+            console.warn('Notification banner not found in DOM');
+            return;
+        }
+
+        // Set the message
+        messageEl.textContent = message;
+        
+        // Set appropriate icon based on level
+        const icons = {
+            warning: '⚠️',
+            danger: '❌',
+            success: '✅',
+            info: 'ℹ️'
+        };
+        iconEl.textContent = icons[level] || icons.warning;
+        
+        // Set the CSS class for styling
+        banner.className = `notification is-${level}`;
+        
+        // Auto-hide after 10 seconds for non-critical messages
+        if (level !== 'danger') {
+            setTimeout(() => {
+                banner.classList.add('is-hidden');
+            }, 10000);
+        }
+    }
+
+    // Clear notifications (useful when API starts working again)
+    clearNotification() {
+        const banner = document.getElementById('notification-banner');
+        if (banner) {
+            banner.classList.add('is-hidden');
+        }
     }
 }
 

@@ -193,6 +193,15 @@
     </div>
     <!-- End Landing Page Wrapper -->
 
+    <!-- Notification Banner for API errors and important messages -->
+    <div id="notification-banner" class="notification is-hidden" role="alert">
+        <div class="notification-content">
+            <span class="notification-icon">⚠️</span>
+            <span class="notification-message"></span>
+            <button class="notification-close" onclick="this.parentElement.parentElement.classList.add('is-hidden')" aria-label="Close notification">×</button>
+        </div>
+    </div>
+
     <!-- App Interface Section -->
     <div class="main-app" id="app" data-app-id="mainApp" style="display: none;">
         <header class="app-header">
