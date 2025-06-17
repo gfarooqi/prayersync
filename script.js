@@ -894,50 +894,73 @@ class PrayerSync {
         const settings = JSON.parse(localStorage.getItem('salatSettings') || '{}');
         
         if (settings.calculationMethod) {
-            this.calculator.calculationMethod = settings.calculationMethod;
-            document.getElementById('calcMethod').value = settings.calculationMethod;
+            this.calculationMethod = settings.calculationMethod; // Store in main class, not calculator
+            const calcMethodEl = document.getElementById('calcMethod');
+            if (calcMethodEl) {
+                calcMethodEl.value = settings.calculationMethod;
+            }
         }
         
         if (settings.notificationTime !== undefined) {
             this.notificationTime = settings.notificationTime;
-            if (document.getElementById('notificationTime')) {
-                document.getElementById('notificationTime').value = settings.notificationTime;
+            const notificationTimeEl = document.getElementById('notificationTime');
+            if (notificationTimeEl) {
+                notificationTimeEl.value = settings.notificationTime;
             }
         }
         
         if (settings.professionalMode !== undefined) {
             this.calendarIntegration.professionalMode = settings.professionalMode;
-            document.getElementById('professionalMode').checked = settings.professionalMode;
+            const professionalModeEl = document.getElementById('professionalMode');
+            if (professionalModeEl) {
+                professionalModeEl.checked = settings.professionalMode;
+            }
         }
         
         if (settings.eventDuration !== undefined) {
             this.calendarIntegration.eventDuration = settings.eventDuration;
-            document.getElementById('eventDuration').value = settings.eventDuration;
+            const eventDurationEl = document.getElementById('eventDuration');
+            if (eventDurationEl) {
+                eventDurationEl.value = settings.eventDuration;
+            }
         }
     }
 
     async saveSettings() {
-        const calculationMethod = document.getElementById('calcMethod').value;
-        const professionalMode = document.getElementById('professionalMode').checked;
-        const eventDuration = parseInt(document.getElementById('eventDuration').value);
-        const notificationTime = document.getElementById('notificationTime') ? 
-            parseInt(document.getElementById('notificationTime').value) : this.notificationTime;
+        // Prevent recursive calls during initialization
+        if (this._savingSettings) return;
+        this._savingSettings = true;
         
-        this.calculator.calculationMethod = calculationMethod;
-        this.calendarIntegration.professionalMode = professionalMode;
-        this.calendarIntegration.eventDuration = eventDuration;
-        this.notificationTime = notificationTime;
-        
-        localStorage.setItem('salatSettings', JSON.stringify({
-            calculationMethod,
-            professionalMode,
-            eventDuration,
-            notificationTime
-        }));
-        
-        await this.updatePrayerTimes();
-        if (document.getElementById('settingsModal')) {
-            document.getElementById('settingsModal').style.display = 'none';
+        try {
+            const calcMethodEl = document.getElementById('calcMethod');
+            const professionalModeEl = document.getElementById('professionalMode');
+            const eventDurationEl = document.getElementById('eventDuration');
+            const notificationTimeEl = document.getElementById('notificationTime');
+            
+            const calculationMethod = calcMethodEl ? calcMethodEl.value : this.calculationMethod || 'MWL';
+            const professionalMode = professionalModeEl ? professionalModeEl.checked : this.calendarIntegration.professionalMode;
+            const eventDuration = eventDurationEl ? parseInt(eventDurationEl.value) : this.calendarIntegration.eventDuration || 30;
+            const notificationTime = notificationTimeEl ? parseInt(notificationTimeEl.value) : this.notificationTime || 15;
+            
+            this.calculationMethod = calculationMethod; // Store in main class
+            this.calendarIntegration.professionalMode = professionalMode;
+            this.calendarIntegration.eventDuration = eventDuration;
+            this.notificationTime = notificationTime;
+            
+            localStorage.setItem('salatSettings', JSON.stringify({
+                calculationMethod,
+                professionalMode,
+                eventDuration,
+                notificationTime
+            }));
+            
+            await this.updatePrayerTimes();
+            const settingsModal = document.getElementById('settingsModal');
+            if (settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        } finally {
+            this._savingSettings = false;
         }
     }
 
