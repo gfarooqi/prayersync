@@ -566,6 +566,8 @@
     <!-- Landing Page Navigation Script -->
     <script>
         function scrollToApp() {
+            console.log('scrollToApp: Function called');
+            
             // Analytics tracking - track app launch
             try {
                 // Vercel Analytics
@@ -585,21 +587,55 @@
                 console.log('Analytics tracking failed:', e);
             }
             
-            // Hide the landing page and show the app container
-            document.getElementById('landing-page-wrapper').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
+            // Get the elements
+            const landingWrapper = document.getElementById('landing-page-wrapper');
+            const appSection = document.getElementById('app');
             
-            // Scroll to the top of the app section
-            document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
+            console.log('scrollToApp: Elements found - Landing:', !!landingWrapper, 'App:', !!appSection);
+            
+            // Hide the landing page and show the app container with force
+            if (landingWrapper) {
+                landingWrapper.style.display = 'none';
+                landingWrapper.style.visibility = 'hidden';
+                console.log('scrollToApp: Landing page hidden');
+            }
+            
+            if (appSection) {
+                appSection.style.display = 'block';
+                appSection.style.visibility = 'visible';
+                // Force the display with !important by setting it inline
+                appSection.setAttribute('style', 'display: block !important; visibility: visible !important;');
+                console.log('scrollToApp: App section shown');
+                
+                // Small delay to ensure DOM updates, then scroll
+                setTimeout(() => {
+                    appSection.scrollIntoView({ behavior: 'smooth' });
+                    console.log('scrollToApp: Scrolled to app section');
+                }, 100);
+            }
             
             // Initialize the app only when user navigates to it
             console.log('scrollToApp: About to check for window.prayerSyncApp...', typeof window.prayerSyncApp);
             if (!window.prayerSyncApp) {
                 console.log('scrollToApp: Creating new PrayerSync instance...');
-                window.prayerSyncApp = new PrayerSync();
-                console.log('scrollToApp: PrayerSync created successfully:', typeof window.prayerSyncApp);
+                // Small delay to ensure DOM is ready
+                setTimeout(() => {
+                    try {
+                        window.prayerSyncApp = new PrayerSync();
+                        console.log('scrollToApp: PrayerSync created successfully:', typeof window.prayerSyncApp);
+                    } catch (error) {
+                        console.error('scrollToApp: Error creating PrayerSync:', error);
+                    }
+                }, 200);
             } else {
-                console.log('scrollToApp: PrayerSync already exists');
+                console.log('scrollToApp: PrayerSync already exists, triggering manual update...');
+                // If app already exists, manually trigger update to ensure prayer times load
+                setTimeout(() => {
+                    if (window.prayerSyncApp && window.prayerSyncApp.updatePrayerTimes) {
+                        window.prayerSyncApp.updatePrayerTimes();
+                        console.log('scrollToApp: Manual prayer times update triggered');
+                    }
+                }, 300);
             }
         }
 
