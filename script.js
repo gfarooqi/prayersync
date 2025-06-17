@@ -505,7 +505,8 @@ class PrayerSync {
                         const cityCountry = ipData.city && ipData.country_name ? 
                             `${ipData.city}, ${ipData.country_name}` : 
                             `${this.location.latitude.toFixed(2)}, ${this.location.longitude.toFixed(2)}`;
-                        locationEl.textContent = `${cityCountry} (IP Location)`;
+                        // Add QA testing indicator for IP location source
+                        locationEl.innerHTML = `${cityCountry} (IP Location) <span style="color: #006A4E; font-weight: bold; font-size: 0.8em;">[QA: IP Location]</span>`;
                     }
                     
                     console.log('IP-based location set successfully:', this.location);
@@ -531,7 +532,7 @@ class PrayerSync {
                 
                 if (locationEl) {
                     locationEl.innerHTML = `
-                        Mecca (default) 
+                        Mecca (default) <span style="color: #006A4E; font-weight: bold; font-size: 0.8em;">[QA: Default Fallback]</span>
                         <button onclick="window.prayerSyncApp.showLocationModal()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px; background: #006A4E; color: white; border: none; border-radius: 4px; cursor: pointer;">
                             Set Location
                         </button>
@@ -591,7 +592,8 @@ class PrayerSync {
         
         const locationEl = document.getElementById('locationText');
         if (locationEl) {
-            locationEl.textContent = `${this.location.latitude.toFixed(2)}, ${this.location.longitude.toFixed(2)} (${source})`;
+            // Add QA testing indicator for location source
+            locationEl.innerHTML = `${this.location.latitude.toFixed(2)}, ${this.location.longitude.toFixed(2)} (${source}) <span style="color: #006A4E; font-weight: bold; font-size: 0.8em;">[QA: ${source}]</span>`;
         }
     }
 
