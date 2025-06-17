@@ -344,11 +344,14 @@ class PrayerSync {
 
     async init() {
         console.log('Initializing PrayerSync app...');
-        this.loadSettings(); // Load settings before setting up listeners to avoid infinite loop
-        this.setupEventListeners();
-        await this.getLocation(); // This now calls updatePrayerTimes internally
+        this.loadSettings(); // Load settings first
+        await this.getLocation(); // This calls updatePrayerTimes internally
         this.startCountdown();
         this.updateDate();
+        
+        // Setup event listeners AFTER initial state is set and UI is rendered
+        // This prevents initialization logic from triggering its own event handlers
+        this.setupEventListeners();
         console.log('PrayerSync app initialized successfully');
     }
 

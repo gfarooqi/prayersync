@@ -614,19 +614,34 @@
                 }, 100);
             }
             
-            // TEMPORARY FIX: Skip PrayerSync initialization to avoid infinite loop
-            // Just show a message to user to refresh page to initialize app
-            console.log('scrollToApp: App navigation working, initialization temporarily disabled');
-            
-            // Show user instruction if app interface is visible
-            setTimeout(() => {
-                if (appSection && appSection.style.display === 'block') {
-                    const locationEl = document.getElementById('locationText');
-                    if (locationEl) {
-                        locationEl.innerHTML = '🔄 <strong>Please refresh the page</strong> to load prayer times';
+            // Initialize the app only when user navigates to it
+            console.log('scrollToApp: About to check for window.prayerSyncApp...', typeof window.prayerSyncApp);
+            if (!window.prayerSyncApp) {
+                console.log('scrollToApp: Creating new PrayerSync instance...');
+                // Small delay to ensure DOM is ready
+                setTimeout(() => {
+                    try {
+                        window.prayerSyncApp = new PrayerSync();
+                        console.log('scrollToApp: PrayerSync created successfully:', typeof window.prayerSyncApp);
+                    } catch (error) {
+                        console.error('scrollToApp: Error creating PrayerSync:', error);
+                        // Fallback message if initialization still fails
+                        const locationEl = document.getElementById('locationText');
+                        if (locationEl) {
+                            locationEl.innerHTML = '❌ <strong>App initialization failed</strong> - please refresh page';
+                        }
                     }
-                }
-            }, 500);
+                }, 200);
+            } else {
+                console.log('scrollToApp: PrayerSync already exists, triggering manual update...');
+                // If app already exists, manually trigger update to ensure prayer times load
+                setTimeout(() => {
+                    if (window.prayerSyncApp && window.prayerSyncApp.updatePrayerTimes) {
+                        window.prayerSyncApp.updatePrayerTimes();
+                        console.log('scrollToApp: Manual prayer times update triggered');
+                    }
+                }, 300);
+            }
         }
 
         function showLanding() {
