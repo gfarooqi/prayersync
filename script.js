@@ -14,27 +14,27 @@ class AlAdhanAPI {
         this.defaultMethod = 3; // MWL
         this.cache = new Map();
         this.cacheTimeout = 24 * 60 * 60 * 1000; // 24 hours
+        
+        // localStorage wrapper to handle JSON parsing and errors safely
+        this._storage = {
+            getItem: (key) => {
+                try {
+                    const item = localStorage.getItem(key);
+                    return item ? JSON.parse(item) : null;
+                } catch (e) {
+                    console.error("Failed to read from localStorage", e);
+                    return null;
+                }
+            },
+            setItem: (key, value) => {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch (e) {
+                    console.error("Failed to write to localStorage", e);
+                }
+            }
+        };
     }
-
-    // localStorage wrapper to handle JSON parsing and errors safely
-    _storage = {
-        getItem: (key) => {
-            try {
-                const item = localStorage.getItem(key);
-                return item ? JSON.parse(item) : null;
-            } catch (e) {
-                console.error("Failed to read from localStorage", e);
-                return null;
-            }
-        },
-        setItem: (key, value) => {
-            try {
-                localStorage.setItem(key, JSON.stringify(value));
-            } catch (e) {
-                console.error("Failed to write to localStorage", e);
-            }
-        }
-    };
 
     // Generate timezone-aware cache key
     getCacheKey(latitude, longitude, dateStr, methodId) {
